@@ -1,0 +1,59 @@
+/* Stylesheet for Attask App */
+
+:root {
+  font-family: 'Staatliches', cursive;
+  font-size: 24px;
+  /* background colors */
+  --header-bg: rgb(214, 68, 5);
+  --toolbar-bg: rgb(131, 131, 245);
+  --todo-container-bg: rgb(212, 194, 224);
+
+  /* icon colors */
+  --header-icon: black;
+  --toolbar-icon: black;
+  --todo-container-icon: black;
+  
+  /* text colors */
+  --header-text: rgb(245, 253, 255);
+  --toolbar-text: blue;
+  --todo-container-text: rgb(182, 182, 182);
+}
+
+body {
+  /* basic styling */
+  box-sizing: border-box;
+  margin: 0;
+}
+
+#content {
+  height: 100vh;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.header {
+  background-color: var(--header-bg);
+  color: var(--header-text);
+  text-align: center;
+  height: 4rem;
+  padding: .5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-container {
+  height: 100%;
+  border: 1px solid purple;
+}
+
+.toolbar {
+  background-color: var(--toolbar-bg);
+  color: var(--toolbar-text);
+  width: 20%;
+  height: 100%;
+}
+
+.todo-container {
+}
