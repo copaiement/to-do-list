@@ -1,5 +1,7 @@
 /* Stylesheet for Attask App */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;900&display=swap');
+
 :root {
   font-family: 'Staatliches', cursive;
   font-size: 24px;
@@ -9,20 +11,38 @@
   --todo-container-bg: rgb(212, 194, 224);
 
   /* icon colors */
-  --header-icon: black;
-  --toolbar-icon: black;
+  --header-icon: rgb(42, 43, 42);
+  --header-icon-hover: rgb(133, 105, 105);
+  --toolbar-icon: rgb(71, 56, 56);
+  --toolbar-icon-hover: rgb(104, 40, 40);
   --todo-container-icon: black;
+
+  /* tasks colors */
+  --task-completed: rgb(206, 218, 141);
+  --task-low: rgb(121, 121, 160);
+  --task-medium: rgb(226, 169, 84);
+  --task-high: rgb(235, 112, 112);
   
+  /* projects colors */
+  --project-completed: rgb(177, 187, 121);
+  --project-low: rgb(99, 99, 133);
+  --project-medium: rgb(187, 139, 66);
+  --project-high: rgb(190, 88, 88);
+
   /* text colors */
   --header-text: rgb(245, 253, 255);
-  --toolbar-text: blue;
+  --toolbar-text: rgb(71, 56, 56);
   --todo-container-text: rgb(182, 182, 182);
+
+  /* styling */
+  --radius: .3rem;
 }
 
 body {
   /* basic styling */
   box-sizing: border-box;
   margin: 0;
+  font-family: 'Inter', sans-serif;
 }
 
 #content {
@@ -34,26 +54,174 @@ body {
 
 .header {
   background-color: var(--header-bg);
-  color: var(--header-text);
+  font-weight: 900;
   text-align: center;
-  height: 4rem;
+  height: 3rem;
   padding: .5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
+.header-left-items .header-icon,
+.header-right-items .header-icon {
+  fill: var(--header-icon);
+  height: 1.5rem;
+  padding: .5rem;
+}
+
+.header-left-items .header-icon:hover,
+.header-right-items .header-icon:hover {
+  fill: var(--header-icon-hover);
+  cursor: pointer;
+}
+
+.header-center-items {
+  color: var(--header-text);
+  fill: var(--header-text);
+  display: flex;
+  align-items: center;
+}
+
+.header-center-items .header-icon {
+  height: 2rem;
+}
+
 .main-container {
   height: 100%;
-  border: 1px solid purple;
+  display: flex;
 }
 
 .toolbar {
   background-color: var(--toolbar-bg);
   color: var(--toolbar-text);
-  width: 20%;
-  height: 100%;
+  fill: var(--toolbar-icon);
+  width: 15%;
+  padding: 1rem;
+  padding-top: 3rem;
+  font-size: .75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  gap: 1rem;
+}
+
+.toolbar-icon {
+  height: 1rem;
+}
+
+.toolbar-item {
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+}
+
+.toolbar-item:hover {
+  color: var(--toolbar-icon-hover);
+  fill: var(--toolbar-icon-hover);
+  cursor: pointer;
 }
 
 .todo-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: .5rem;
+  
+}
+
+.empty-msg {
+  font-size: .75rem;
+  color: gray;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.project-container {
+  font-size: .75rem;  
+  display: flex;
+  flex-direction: column;
+}
+
+.project-header {
+  font-weight: 900;
+  background-color: var(--project-medium);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 2px solid black;
+}
+
+
+.task {
+  background-color: var(--task-high);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5rem;
+  border-bottom: 2px solid gray;
+}
+
+.project-icons-left,
+.project-icons-right,
+.task-icons-left,
+.task-icons-right {
+  align-items: center;
+}
+
+img {
+  aspect-ratio: 1;
+  height: 1rem;
+}
+
+/* dynamic classes */
+.only {
+  border-radius: var(--radius);
+  border-bottom: none;
+}
+
+.last {
+  border-radius: 0 0 var(--radius) var(--radius);
+  border-bottom: none;
+}
+
+.hidden {
+  display: none;
+}
+
+.task-low {
+  background-color: var(--task-low);
+}
+
+.task-medium {
+  background-color: var(--task-medium);
+}
+
+.task-high {
+  background-color: var(--task-high);
+}
+
+.task-completed {
+  background-color: var(--task-completed);
+}
+
+.project-low {
+  background-color: var(--project-low);
+}
+
+.project-medium {
+  background-color: var(--project-medium);
+}
+
+.project-high {
+  background-color: var(--project-high);
+}
+
+.project-completed {
+  background-color: var(--project-completed);
 }
