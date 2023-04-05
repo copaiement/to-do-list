@@ -4,25 +4,69 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Attask</title>
+  <title>attask</title>
+  <link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico" />
   <script src="./main.js" defer></script>
 </head>
 <body>
   <div id="content">
     <div class="header">
       <div class="header-left-items">
-
+        <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>menu</title><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" /></svg>
       </div>
-      <div class="title">Attask</div>
+      <div class="header-center-items">
+        <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>check-bold</title><path d="M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z" /></svg>
+        <div id="title">attask</div>
+      </div>
       <div class="header-right-items">
-
+        <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>format-list-group-plus</title><path d="M17 14V17H14V19H17V22H19V19H22V17H19V14M20 11V12.3C19.4 12.1 18.7 12 18 12C16.8 12 15.6 12.4 14.7 13H7V11H20M12.1 17H7V15H12.8C12.5 15.6 12.2 16.3 12.1 17M7 7H20V9H7V7M5 19H7V21H3V3H7V5H5V19Z" /></svg>
+        <svg class="header-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>plus-box</title><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" /></svg>
       </div>
     </div>
     <div class="main-container">
-      <div class="toolbar">TEST
+      <div class="toolbar">
+        <div class="toolbar-item">
+          <svg class="toolbar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>format-list-group-plus</title><path d="M17 14V17H14V19H17V22H19V19H22V17H19V14M20 11V12.3C19.4 12.1 18.7 12 18 12C16.8 12 15.6 12.4 14.7 13H7V11H20M12.1 17H7V15H12.8C12.5 15.6 12.2 16.3 12.1 17M7 7H20V9H7V7M5 19H7V21H3V3H7V5H5V19Z" /></svg>
+          <div class="toolbar-text">Create Project</div>
+        </div>
+        <div class="toolbar-item">
+          <svg class="toolbar-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><title>plus-box</title><path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M19,3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3Z" /></svg>
+          <div class="toolbar-text">Create Task</div>
+        </div>
       </div>
       <div class="todo-container">
-      
+        <div class="empty-msg hidden">Add a Project or a Task to get started!</div>
+        
+        <div class="project-container">
+          <div class="project-header">
+            <div class="project-icons-left">
+              <img class="hidden" src="./images/menu-down.svg" alt="menu down icon">
+              <img src="./images/menu-up.svg" alt="menu up icon">
+            </div>
+            <div class="project-name">Test Project</div>
+            <div class="project-due">Due: 6/7</div>
+            <div class="project-complete">Complete: 0/7</div>
+            <div class="project-icons-right">
+              <img src="./images/check-bold.svg" alt="check icon">
+              <img src="./images/flag.svg" alt="flag icon">
+              <img src="./images/delete.svg" alt="trash icon">
+            </div>
+          </div>
+          <div class="task last">
+            <div class="task-icons-left">
+              <img class="hidden" src="./images/menu-down.svg" alt="menu down icon">
+              <img src="./images/menu-up.svg" alt="menu up icon">
+            </div>
+            <div class="task-name">Test Task</div>
+            <div class="task-desc">Test Description</div>
+            <div class="task-due">Due: 6/7</div>
+            <div class="task-icons-right">
+              <img src="./images/check-bold.svg" alt="check icon">
+              <img src="./images/flag.svg" alt="flag icon">
+              <img src="./images/delete.svg" alt="trash icon">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
