@@ -40,32 +40,37 @@
         </div>
       </div>
       <div class="todo-container">
+        <!-- message when no projects or tasks exist -->
         <div class="empty-msg hidden">Add a Project or a Task to get started!</div>
-        
+        <!-- create info modal here -->
+        <!-- template for projects -->
         <div class="project-container">
           <div class="project-header">
-            <div class="project-icons-left">
+            <div class="icons-left">
               <img class="hidden" src="./images/menu-down.svg" alt="menu down icon">
               <img src="./images/menu-up.svg" alt="menu up icon">
             </div>
-            <div class="project-name">Test Project</div>
-            <div class="project-due">Due: 6/7</div>
-            <div class="project-complete">Complete: 0/7</div>
-            <div class="project-icons-right">
+            <div class="name">Test Project</div>
+            <div class="desc hidden">Test Description</div>
+            <div class="due">Due: 6/7</div>
+            <div class="status">Complete: 0/7</div>
+            <div class="icons-right">
               <img src="./images/check-bold.svg" alt="check icon">
               <img src="./images/flag.svg" alt="flag icon">
               <img src="./images/delete.svg" alt="trash icon">
             </div>
           </div>
-          <div class="task last">
-            <div class="task-icons-left">
+          <!-- template for tasks -->
+          <div class="task-container last">
+            <div class="icons-left">
               <img class="hidden" src="./images/menu-down.svg" alt="menu down icon">
               <img src="./images/menu-up.svg" alt="menu up icon">
             </div>
-            <div class="task-name">Test Task</div>
-            <div class="task-desc">Test Description</div>
-            <div class="task-due">Due: 6/7</div>
-            <div class="task-icons-right">
+            <div class="name">Test Task</div>
+            <div class="desc">Test Description</div>
+            <div class="due">Due: 6/7</div>
+            <div class="status hidden">Complete: 0/7</div>
+            <div class="icons-right">
               <img src="./images/check-bold.svg" alt="check icon">
               <img src="./images/flag.svg" alt="flag icon">
               <img src="./images/delete.svg" alt="trash icon">
