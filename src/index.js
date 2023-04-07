@@ -20,7 +20,9 @@ function buildProject(projectObj) {
   projectHeader.classList.add('only');
 }
 
-function buildTask(parentProj, taskObj) {
+function buildTask(parentProjName, taskObj) {
+  // find project container
+  const parentProj = document.querySelector(`.${parentProjName}-project-container`);
   // create task container
   const taskContainer = buildItem(parentProj, taskObj);
   // create left icons
@@ -46,7 +48,7 @@ function buildItem(parent, object) {
 function buildLeftIcons(parent, object) {
   // create project header icons container, left
   const IconsLeft = document.createElement('div');
-  parent.appendChild(projectIconsLeft);
+  parent.appendChild(IconsLeft);
   IconsLeft.classList.add('icons-left');
 
   // create project header icons, left
@@ -114,7 +116,13 @@ function buildRightIcons(parent, object) {
 // Input handling
 function readForm() {
   // read info from modal form
-
+  // testing values
+  const type = 'task';
+  const project = 'default';
+  const name = 'Test 1';
+  const description = 'desc here';
+  const dueDate = '6/7';
+  const status = '';
   // create new object from form information
   const newItem = createItem(type, project, name, description, dueDate, status);
 
@@ -138,6 +146,7 @@ function createItem(type, project, name, description, dueDate, status) {
 function createTask() {
   // get info from form
   const task = readForm();
+  console.log(task);
   // push to addTask
   storeTask(task);
   // update DOM
@@ -160,7 +169,7 @@ function storeProject(project) {
 
 // add task to storage
 function storeTask(task) {
-  if (this.project === '') {
+  if (task.project === 'default') {
     // if task is not assigned to a project, add to unsortedTasks
     unsortedTasks.push(task);
   } else {
@@ -176,3 +185,18 @@ function storeTask(task) {
 let unsortedTasks = [];
 
 let projectList = [];
+
+
+// testing
+function initialize() {
+  const taskButton = document.querySelector('.test-task');
+  const projButton = document.querySelector('.test-proj');
+  taskButton.addEventListener('click', () => {
+    createTask();
+  });
+  projButton.addEventListener('click', () => {
+    createProject();
+  });
+}
+
+initialize();
