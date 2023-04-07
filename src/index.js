@@ -2,7 +2,6 @@
 import './style.css';
 
 // DOM manipulation
-
 function buildProject(projectObj) {
   // create project div and insert
   const project = document.createElement('div');
@@ -21,7 +20,7 @@ function buildProject(projectObj) {
   projectHeader.classList.add('only');
 }
 
-function buildTaks(parentProj, taskObj) {
+function buildTask(parentProj, taskObj) {
   // create task container
   const taskContainer = buildItem(parentProj, taskObj);
   // create left icons
@@ -112,9 +111,19 @@ function buildRightIcons(parent, object) {
   trashIcon.alt = 'trash icon';
 }
 
+// Input handling
+function readForm() {
+  // read info from modal form
+
+  // create new object from form information
+  const newItem = createItem(type, project, name, description, dueDate, status);
+
+  //return object
+  return newItem;
+}
 // Object creation
 
-// create new task
+// create new task or project object
 function createItem(type, project, name, description, dueDate, status) {
   return {
     type: type,
@@ -126,17 +135,44 @@ function createItem(type, project, name, description, dueDate, status) {
   };
 }
 
+function createTask() {
+  // get info from form
+  const task = readForm();
+  // push to addTask
+  storeTask(task);
+  // update DOM
+  buildTask(task.project, task);
+}
+
+function createProject() {
+  // get info from form
+  const project = readForm();
+  // push to addTask
+  storeProject(project);
+  // update DOM
+  buildProject(project);
+}
+
+// add project to storage
+function storeProject(project) {
+  projectList.push(project);
+}
+
+// add task to storage
+function storeTask(task) {
+  if (this.project === '') {
+    // if task is not assigned to a project, add to unsortedTasks
+    unsortedTasks.push(task);
+  } else {
+    // if task is assigned to a project, find the project in projectList and add task
+    const project = projectList.find(task.project);
+    project.push(task);
+  }
+}
+
+// Object Manipulation
+
 // object storage
 let unsortedTasks = [];
 
 let projectList = [];
-
-// to make a new project:
-// create project, then add to project list. first entry is "task" which
-// contains all project information
-// next entries in project are the tasks
-
-// add to projectList
-function addProject(project) {
-  projectList.push(project);
-}
