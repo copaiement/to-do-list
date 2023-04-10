@@ -140,19 +140,23 @@ body {
   align-items: center;
 }
 
-.project-container {
-  font-size: .75rem;  
+.project-container { 
   display: flex;
   flex-direction: column;
+}
+
+.project-header,
+.task-container {
+  font-size: .75rem;
+  padding: .5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .project-header {
   font-weight: 900;
   background-color: var(--project-medium);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: .5rem;
   border-radius: var(--radius) var(--radius) 0 0;
   border-bottom: 2px solid black;
 }
@@ -160,10 +164,6 @@ body {
 
 .task-container {
   background-color: var(--task-high);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: .5rem;
   border-bottom: 2px solid gray;
 }
 

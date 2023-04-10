@@ -118,13 +118,13 @@ function readForm() {
   // read info from modal form
   // testing values
   const type = 'task';
-  const project = 'default';
+  const projectID = 'default';
   const name = 'Test 1';
   const description = 'desc here';
   const dueDate = '6/7';
   const status = '';
   // create new object from form information
-  const newItem = createItem(type, project, name, description, dueDate, status);
+  const newItem = createItem(type, projectID, name, description, dueDate, status);
 
   //return object
   return newItem;
@@ -132,10 +132,10 @@ function readForm() {
 // Object creation
 
 // create new task or project object
-function createItem(type, project, name, description, dueDate, status) {
+function createItem(type, projectID, name, description, dueDate, status) {
   return {
     type: type,
-    project: project,
+    projectID: projectID,
     name: name,
     description: description,
     dueDate: dueDate,
@@ -150,7 +150,7 @@ function createTask() {
   // push to addTask
   storeTask(task);
   // update DOM
-  buildTask(task.project, task);
+  buildTask(task.projectID, task);
 }
 
 function createProject() {
@@ -164,17 +164,21 @@ function createProject() {
 
 // add project to storage
 function storeProject(project) {
+  // add project header to project list
   projectList.push(project);
+  // create new array to hold tasks in project
+
+
 }
 
 // add task to storage
 function storeTask(task) {
-  if (task.project === 'default') {
+  if (task.projectID === 'default') {
     // if task is not assigned to a project, add to unsortedTasks
     unsortedTasks.push(task);
   } else {
     // if task is assigned to a project, find the project in projectList and add task
-    const project = projectList.find(task.project);
+    const project = projectList.find(projectID => project.projectID === task.projectID);
     project.push(task);
   }
 }
@@ -182,21 +186,91 @@ function storeTask(task) {
 // Object Manipulation
 
 // object storage
-let unsortedTasks = [];
+const objectStorage = (() => {
+  // initialize arrays
+  let unsortedTasks = [];
+  let projectList = [];
+  let taskList = [];
 
-let projectList = [];
+  // function to store projects
+  function storeProject(project) {
+    // add project header to project list
+    projectList.push(project);
+    // create new array to hold tasks in project
+  }
 
+  // function to store tasks
+  function storeTask(task) {
+    if (task.projectId === 'default') {
+      // if task is not assigned to a project, add to unsortedTasks
+      unsortedTasks.push(task);
+    } else {
+      taskList.push(task);
+    }
+  }
+})();
 
 // testing
 function initialize() {
   const taskButton = document.querySelector('.test-task');
   const projButton = document.querySelector('.test-proj');
   taskButton.addEventListener('click', () => {
-    createTask();
+    testTask();
   });
   projButton.addEventListener('click', () => {
-    createProject();
+    testProj();
   });
+}
+
+function taskData() {
+  // read info from modal form
+  // testing values
+  const type = 'task';
+  const project = 'TEST';
+  const name = 'Test 1';
+  const description = 'desc here';
+  const dueDate = '6/7';
+  const status = '';
+  // create new object from form information
+  const newItem = createItem(type, project, name, description, dueDate, status);
+
+  // return object
+  return newItem;
+}
+
+function projData() {
+  // read info from modal form
+  // testing values
+  const type = 'task';
+  const project = 'TEST';
+  const name = 'Test 1';
+  const description = 'desc here';
+  const dueDate = '6/7';
+  const status = '';
+  // create new object from form information
+  const newItem = createItem(type, project, name, description, dueDate, status);
+
+  // return object
+  return newItem;
+}
+
+function testTask() {
+  // get info from form
+  const task = taskData();
+  console.log(task);
+  // push to addTask
+  storeTask(task);
+  // update DOM
+  buildTask(task.project, task);
+}
+
+function testProj() {
+  // get info from form
+  const project = projData();
+  // push to addTask
+  storeProject(project);
+  // update DOM
+  buildProject(project);
 }
 
 initialize();
