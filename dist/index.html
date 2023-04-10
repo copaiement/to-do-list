@@ -46,6 +46,41 @@
         <!-- message when no projects or tasks exist -->
         <div class="empty-msg hidden">Add a Project or a Task to get started!</div>
         <!-- create info modal here -->
+        <div class="task-modal">
+          <form action="submit">
+            <ul class="input-wrapper">
+              <li class="form-row">
+                <label for="name-input">Task Name:</label>
+                <input id="name-input" type="text" placeholder="Client Email" required>
+              </li>
+              <li class="form-row">
+                <label for="desc-input">Description:</label>
+                <input type="text" id="desc-input" placeholder="Optional">
+              </li>
+              <li class="form-row">
+                <label for="project-input">Project:</label>
+                <select id="project-input" name="project-input">
+                  <option value="Default">Default</option>
+                  <option value="Proj 1">Proj 1</option>
+                  <option value="Proj 2">Proj 2</option>
+                </select>
+              </li>
+              <li class="form-row">
+                <label for="date-input">Due Date:</label>
+                <input id="date-input" type="text">
+              </li>
+              <li class="form-row">
+                <label for="priority-input">Priority:</label>
+                <select id="priority-input" name="priority-input">
+                  <option value="Default">Low</option>
+                  <option value="Proj 1">Medium</option>
+                  <option value="Proj 2">High</option>
+                </select>
+              </li>
+            </ul>
+            <input id="submit-btn" type="submit" value="Add Task">
+          </form>
+        </div>
         <!-- default project -->
         <div class="default-project-container">
           

@@ -7,6 +7,7 @@ function buildProject(projectObj) {
   const project = document.createElement('div');
   document.querySelector('.todo-container').appendChild(project);
   project.classList.add('project-container');
+  project.id = `${projectObj.projectID}`;
 
   // create project header div (same structure as task)
   const projectHeader = buildItem(project, projectObj);
@@ -16,14 +17,16 @@ function buildProject(projectObj) {
   buildInfo(projectHeader, projectObj);
   // create right icons
   buildRightIcons(projectHeader, projectObj);
-  // make project-header only
-  projectHeader.classList.add('only');
+  // update CSS classes
+  updateClass(projectHeader, projectObj);
+
 }
 
 function buildTask(parentProjName, taskObj) {
   // find project container
-  const parentProj = document.querySelector(`.${parentProjName}-project-container`);
+  const parentProj = document.querySelector(`#${parentProjName}`);
   // create task container
+  console.log(parentProj);
   const taskContainer = buildItem(parentProj, taskObj);
   // create left icons
   buildLeftIcons(taskContainer, taskObj);
@@ -31,6 +34,8 @@ function buildTask(parentProjName, taskObj) {
   buildInfo(taskContainer, taskObj);
   // create right icons
   buildRightIcons(taskContainer, taskObj);
+  // update CSS classes
+  updateClass(taskContainer, taskObj);
 }
 
 function buildItem(parent, object) {
@@ -43,6 +48,16 @@ function buildItem(parent, object) {
     item.classList.add('task-container');
   }
   return item;
+}
+
+function updateClass(container, object) {
+  if (object.type === 'project') {
+    // set class to "last" for newly added project
+  } else {
+    // get length of array
+
+    
+  }
 }
 
 function buildLeftIcons(parent, object) {
@@ -114,25 +129,35 @@ function buildRightIcons(parent, object) {
 }
 
 // Input handling
-function readForm() {
+function readForm(type1) {
   // read info from modal form
-  // testing values
-  const type = 'task';
-  const projectID = 'default';
-  const name = 'Test 1';
-  const description = 'desc here';
-  const dueDate = '6/7';
-  const status = '';
-  // create new object from form information
-  const newItem = createItem(type, projectID, name, description, dueDate, status);
 
+  // create new object from form information
+  let newItem;
+  if (type === 'task') {
+    newItem = createTaskObj(type, projectID, name, description, dueDate, priority);
+  } else {
+    newItem = createProjectObj(type, projectID, name, description, dueDate, status, tasks);
+  }
   //return object
   return newItem;
 }
 // Object creation
 
 // create new task or project object
-function createItem(type, projectID, name, description, dueDate, status) {
+function createTaskObj(type, projectID, name, description, dueDate, priority) {
+  return {
+    type: type,
+    projectID: projectID,
+    name: name,
+    description: description,
+    dueDate: dueDate,
+    priority: priority,
+  };
+}
+
+// create new task or project object
+function createProjectObj(type, projectID, name, description, dueDate, status, tasks) {
   return {
     type: type,
     projectID: projectID,
@@ -140,6 +165,7 @@ function createItem(type, projectID, name, description, dueDate, status) {
     description: description,
     dueDate: dueDate,
     status: status,
+    tasks: [],
   };
 }
 
@@ -147,8 +173,8 @@ function createTask() {
   // get info from form
   const task = readForm();
   console.log(task);
-  // push to addTask
-  storeTask(task);
+  // store task
+  objectStorage.storeTask(task);
   // update DOM
   buildTask(task.projectID, task);
 }
@@ -156,31 +182,10 @@ function createTask() {
 function createProject() {
   // get info from form
   const project = readForm();
-  // push to addTask
-  storeProject(project);
+  // store project
+  objectStorage.storeProject(project);
   // update DOM
   buildProject(project);
-}
-
-// add project to storage
-function storeProject(project) {
-  // add project header to project list
-  projectList.push(project);
-  // create new array to hold tasks in project
-
-
-}
-
-// add task to storage
-function storeTask(task) {
-  if (task.projectID === 'default') {
-    // if task is not assigned to a project, add to unsortedTasks
-    unsortedTasks.push(task);
-  } else {
-    // if task is assigned to a project, find the project in projectList and add task
-    const project = projectList.find(projectID => project.projectID === task.projectID);
-    project.push(task);
-  }
 }
 
 // Object Manipulation
@@ -190,12 +195,13 @@ const objectStorage = (() => {
   // initialize arrays
   let unsortedTasks = [];
   let projectList = [];
-  let taskList = [];
 
   // function to store projects
   function storeProject(project) {
     // add project header to project list
     projectList.push(project);
+    console.log('PROJECT LIST');
+    console.log(projectList);
     // create new array to hold tasks in project
   }
 
@@ -205,9 +211,21 @@ const objectStorage = (() => {
       // if task is not assigned to a project, add to unsortedTasks
       unsortedTasks.push(task);
     } else {
-      taskList.push(task);
+      // find the project in the projectList
+      let projectIndex = projectList.findIndex(project => (project.projectID === task.projectID));
+      // if project does not exist (typo), add task to default
+      if (projectIndex === -1) {
+        unsortedTasks.push(task);
+      } else {
+        projectList[projectIndex].tasks.push(task);
+      }
     }
   }
+
+  return {
+    storeProject,
+    storeTask,
+  };
 })();
 
 // testing
@@ -226,13 +244,13 @@ function taskData() {
   // read info from modal form
   // testing values
   const type = 'task';
-  const project = 'TEST';
+  const projectID = 'TEST';
   const name = 'Test 1';
   const description = 'desc here';
   const dueDate = '6/7';
   const status = '';
   // create new object from form information
-  const newItem = createItem(type, project, name, description, dueDate, status);
+  const newItem = createItem(type, projectID, name, description, dueDate, status);
 
   // return object
   return newItem;
@@ -241,14 +259,15 @@ function taskData() {
 function projData() {
   // read info from modal form
   // testing values
-  const type = 'task';
+  const type = 'project';
   const project = 'TEST';
   const name = 'Test 1';
   const description = 'desc here';
   const dueDate = '6/7';
   const status = '';
+  const tasks = [];
   // create new object from form information
-  const newItem = createItem(type, project, name, description, dueDate, status);
+  const newItem = createTestItem(type, project, name, description, dueDate, status, tasks);
 
   // return object
   return newItem;
@@ -259,18 +278,31 @@ function testTask() {
   const task = taskData();
   console.log(task);
   // push to addTask
-  storeTask(task);
+  objectStorage.storeTask(task);
   // update DOM
-  buildTask(task.project, task);
+  buildTask(task.projectID, task);
 }
 
 function testProj() {
   // get info from form
   const project = projData();
+  console.log(project);
   // push to addTask
-  storeProject(project);
+  objectStorage.storeProject(project);
   // update DOM
   buildProject(project);
+}
+
+function createTestItem(type, projectID, name, description, dueDate, status) {
+  return {
+    type: type,
+    projectID: projectID,
+    name: name,
+    description: description,
+    dueDate: dueDate,
+    status: status,
+    tasks: [],
+  };
 }
 
 initialize();
