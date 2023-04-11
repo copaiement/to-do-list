@@ -2,10 +2,10 @@
 import './style.css';
 
 // initialize
-addEventListeners();
+addModalEventListeners();
 
 // Add/remove Event Listeners
-function addEventListeners() {
+function addModalEventListeners() {
   const addTaskBtns = document.querySelectorAll('.create-task-btn');
   const addProjBtns = document.querySelectorAll('.create-proj-btn');
 
@@ -13,7 +13,7 @@ function addEventListeners() {
   addProjBtns.forEach(btn => btn.addEventListener('click', showProjModal));
 }
 
-function removeEventListeners() {
+function removeModalEventListeners() {
   const addTaskBtns = document.querySelectorAll('.create-task-btn');
   const addProjBtns = document.querySelectorAll('.create-proj-btn');
 
@@ -36,14 +36,18 @@ function showTaskModal() {
   document.querySelector('.empty-msg').classList.add('hidden');
   const modal = document.querySelector('.task-modal');
   modal.classList.remove('hidden');
-  removeEventListeners();
+  removeModalEventListeners();
 }
 
 function showProjModal() {
   document.querySelector('.empty-msg').classList.add('hidden');
   const modal = document.querySelector('.project-modal');
   modal.classList.remove('hidden');
-  removeEventListeners();
+  removeModalEventListeners();
+}
+
+function showHideWelcome() {
+  const msg = document.querySelector('.empty-msg');
 }
 
 function buildProjectList() {
