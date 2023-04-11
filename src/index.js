@@ -1,21 +1,49 @@
 // import stylesheet
 import './style.css';
 
-// Event Listeners
-const addTaskBtns = document.querySelectorAll('.create-task-btn');
-const addProjBtns = document.querySelectorAll('.create-proj-btn');
+// initialize
+addEventListeners();
 
+// Add/remove Event Listeners
+function addEventListeners() {
+  const addTaskBtns = document.querySelectorAll('.create-task-btn');
+  const addProjBtns = document.querySelectorAll('.create-proj-btn');
 
+  addTaskBtns.forEach(btn => btn.addEventListener('click', showTaskModal));
+  addProjBtns.forEach(btn => btn.addEventListener('click', showProjModal));
+}
+
+function removeEventListeners() {
+  const addTaskBtns = document.querySelectorAll('.create-task-btn');
+  const addProjBtns = document.querySelectorAll('.create-proj-btn');
+
+  addTaskBtns.forEach(btn => btn.removeEventListener('click', showTaskModal));
+  addProjBtns.forEach(btn => btn.removeEventListener('click', showProjModal));
+}
 
 // DOM manipulation
-function hideModal(type) {
-  const modal = document.querySelector(`.${type}-modal`);
+function hideTaskModal() {
+  const modal = document.querySelector('.task-modal');
   modal.classList.add('hidden');
 }
 
-function showModal(type) {
-  const modal = document.querySelector(`.${type}-modal`);
+function hideProjModal() {
+  const modal = document.querySelector('.project-modal');
+  modal.classList.add('hidden');
+}
+
+function showTaskModal() {
+  document.querySelector('.empty-msg').classList.add('hidden');
+  const modal = document.querySelector('.task-modal');
   modal.classList.remove('hidden');
+  removeEventListeners();
+}
+
+function showProjModal() {
+  document.querySelector('.empty-msg').classList.add('hidden');
+  const modal = document.querySelector('.project-modal');
+  modal.classList.remove('hidden');
+  removeEventListeners();
 }
 
 function buildProjectList() {
@@ -267,81 +295,81 @@ const objectStorage = (() => {
   };
 })();
 
-// testing
-function initialize() {
-  const taskButton = document.querySelector('.test-task');
-  const projButton = document.querySelector('.test-proj');
-  taskButton.addEventListener('click', () => {
-    testTask();
-  });
-  projButton.addEventListener('click', () => {
-    testProj();
-  });
-}
+// // testing
+// function initialize() {
+//   const taskButton = document.querySelector('.test-task');
+//   const projButton = document.querySelector('.test-proj');
+//   taskButton.addEventListener('click', () => {
+//     testTask();
+//   });
+//   projButton.addEventListener('click', () => {
+//     testProj();
+//   });
+// }
 
-function taskData() {
-  // read info from modal form
-  // testing values
-  const type = 'task';
-  const projectID = 'TEST';
-  const name = 'Test 1';
-  const description = 'desc here';
-  const dueDate = '6/7';
-  const status = '';
-  // create new object from form information
-  const newItem = createItem(type, projectID, name, description, dueDate, status);
+// function taskData() {
+//   // read info from modal form
+//   // testing values
+//   const type = 'task';
+//   const projectID = 'TEST';
+//   const name = 'Test 1';
+//   const description = 'desc here';
+//   const dueDate = '6/7';
+//   const status = '';
+//   // create new object from form information
+//   const newItem = createItem(type, projectID, name, description, dueDate, status);
 
-  // return object
-  return newItem;
-}
+//   // return object
+//   return newItem;
+// }
 
-function projData() {
-  // read info from modal form
-  // testing values
-  const type = 'project';
-  const project = 'TEST';
-  const name = 'Test 1';
-  const description = 'desc here';
-  const dueDate = '6/7';
-  const status = '';
-  const tasks = [];
-  // create new object from form information
-  const newItem = createTestItem(type, project, name, description, dueDate, status, tasks);
+// function projData() {
+//   // read info from modal form
+//   // testing values
+//   const type = 'project';
+//   const project = 'TEST';
+//   const name = 'Test 1';
+//   const description = 'desc here';
+//   const dueDate = '6/7';
+//   const status = '';
+//   const tasks = [];
+//   // create new object from form information
+//   const newItem = createTestItem(type, project, name, description, dueDate, status, tasks);
 
-  // return object
-  return newItem;
-}
+//   // return object
+//   return newItem;
+// }
 
-function testTask() {
-  // get info from form
-  const task = taskData();
-  console.log(task);
-  // push to addTask
-  objectStorage.storeTask(task);
-  // update DOM
-  buildTask(task.projectID, task);
-}
+// function testTask() {
+//   // get info from form
+//   const task = taskData();
+//   console.log(task);
+//   // push to addTask
+//   objectStorage.storeTask(task);
+//   // update DOM
+//   buildTask(task.projectID, task);
+// }
 
-function testProj() {
-  // get info from form
-  const project = projData();
-  console.log(project);
-  // push to addTask
-  objectStorage.storeProject(project);
-  // update DOM
-  buildProject(project);
-}
+// function testProj() {
+//   // get info from form
+//   const project = projData();
+//   console.log(project);
+//   // push to addTask
+//   objectStorage.storeProject(project);
+//   // update DOM
+//   buildProject(project);
+// }
 
-function createTestItem(type, projectID, name, description, dueDate, status) {
-  return {
-    type: type,
-    projectID: projectID,
-    name: name,
-    description: description,
-    dueDate: dueDate,
-    status: status,
-    tasks: [],
-  };
-}
+// function createTestItem(type, projectID, name, description, dueDate, status) {
+//   return {
+//     type: type,
+//     projectID: projectID,
+//     name: name,
+//     description: description,
+//     dueDate: dueDate,
+//     status: status,
+//     tasks: [],
+//   };
+// }
 
-initialize();
+// initialize();
