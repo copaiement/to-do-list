@@ -1,7 +1,39 @@
 // import stylesheet
 import './style.css';
 
+// Event Listeners
+const addTaskBtns = document.querySelectorAll('.create-task-btn');
+const addProjBtns = document.querySelectorAll('.create-proj-btn');
+
+
+
 // DOM manipulation
+function hideModal(type) {
+  const modal = document.querySelector(`.${type}-modal`);
+  modal.classList.add('hidden');
+}
+
+function showModal(type) {
+  const modal = document.querySelector(`.${type}-modal`);
+  modal.classList.remove('hidden');
+}
+
+function buildProjectList() {
+  let projNamesArray = objectStorage.getProjectNames();
+  const selectProj = document.querySelector('#task-project-input');
+  // remove current project list
+  while (selectProj.firstChild) {
+    selectProj.removeChild(selectProj.firstChild);
+  }
+  // add new project list
+  projNamesArray.forEach(projectName => {
+    let option = document.createElement('option');
+    selectProj.appendChild(option);
+    option.value = `${projectName}`;
+    option.textContent = `${projectName}`;
+  });
+}
+
 function buildProject(projectObj) {
   // create project div and insert
   const project = document.createElement('div');
@@ -222,9 +254,16 @@ const objectStorage = (() => {
     }
   }
 
+  function getProjectNames() {
+    let projectNames = ['default'];
+    projectList.forEach(project => projectNames.push(project.name));
+    return projectNames;
+  }
+
   return {
     storeProject,
     storeTask,
+    getProjectNames,
   };
 })();
 
