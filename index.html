@@ -45,65 +45,63 @@
         <!-- create task modal here -->
         <div class="task-modal hidden">
           <form action="submit">
-            <ul class="input-wrapper">
-              <li class="form-row">
+            <div class="input-wrapper">
+              <div class="form-row">
                 <label for="task-name-input">Task Name:</label>
                 <input id="task-name-input" type="text" placeholder="Client Email" required>
-              </li>
-              <li class="form-row">
+              </div>
+              <div class="form-row">
                 <label for="task-desc-input">Description:</label>
                 <input type="text" id="task-desc-input" placeholder="Optional">
-              </li>
-              <li class="form-row">
+              </div>
+              <div class="form-row">
                 <label for="task-project-input">Project:</label>
                 <select id="task-project-input" name="project-input">
                   <option value="Default">Default</option>
-                  <option value="Proj 1">Proj 1</option>
-                  <option value="Proj 2">Proj 2</option>
                 </select>
-              </li>
-              <li class="form-row">
+              </div>
+              <div class="form-row">
                 <label for="task-date-input">Due Date:</label>
                 <input id="task-date-input" type="text">
-              </li>
-              <li class="form-row">
+              </div>
+              <div class="form-row">
                 <label for="task-priority-input">Priority:</label>
                 <select id="task-priority-input" name="priority-input">
                   <option value="priority-low">Low</option>
                   <option value="priority-med">Medium</option>
                   <option value="priority-high">High</option>
                 </select>
-              </li>
-            </ul>
-            <input id="task-submit-btn" type="submit" value="Add Task">
+              </div>
+              <button id="task-submit-btn">Add Task</button>
+            </div>
           </form>
         </div>
         <!-- create project modal here -->
         <div class="project-modal hidden">
           <form action="submit">
-            <ul class="input-wrapper">
-              <li class="form-row">
+            <div class="input-wrapper">
+              <div class="form-row">
                 <label for="proj-name-input">Project Name:</label>
                 <input id="proj-name-input" type="text" placeholder="Client Email" required>
-              </li>
-              <li class="form-row">
+              </div>
+              <div class="form-row">
                 <label for="proj-desc-input">Description:</label>
                 <input type="text" id="proj-desc-input" placeholder="Optional">
-              </li>
-              <li class="form-row">
+              </div>
+              <div class="form-row">
                 <label for="proj-date-input">Due Date:</label>
                 <input id="proj-date-input" type="text">
-              </li>
-              <li class="form-row">
+              </div>
+              <div class="form-row">
                 <label for="proj-priority-input">Priority:</label>
                 <select id="proj-priority-input" name="priority-input">
                   <option value="priority-low">Low</option>
                   <option value="priority-med">Medium</option>
                   <option value="priority-high">High</option>
                 </select>
-              </li>
-            </ul>
-            <input id="proj-submit-btn" type="submit" value="Add Project">
+              </div>
+              <button id="task-submit-btn">Add Task</button>
+            </div>
           </form>
         </div>
         <!-- default project -->
