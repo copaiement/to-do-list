@@ -92,13 +92,12 @@ function buildProject(projectObj) {
   // create right icons
   buildRightIcons(projectHeader, projectObj);
   // update CSS classes
-  updateClass(projectHeader, projectObj);
-
+  updateClasses();
 }
 
-function buildTask(parentProjName, taskObj) {
+function buildTask(taskObj) {
   // get project ID from name
-  const parentID = objectStorage.returnProjectID(parentProjName);
+  const parentID = taskObj.projectID;
   // find project container
   const parentProj = document.querySelector(`#${parentID}-project-container`);
   // create task container
@@ -110,7 +109,7 @@ function buildTask(parentProjName, taskObj) {
   // create right icons
   buildRightIcons(taskContainer, taskObj);
   // update CSS classes
-  updateClass(taskContainer, taskObj);
+  updateClasses();
 }
 
 function buildItem(parent, object) {
@@ -125,15 +124,11 @@ function buildItem(parent, object) {
   return item;
 }
 
-function updateClass(container, object) {
-  if (object.type === 'project') {
-    // set class to "last" for newly added project
-    container.classList.add('.only');
-  } else {
-    // get length of array
+// after add, sort, or delete, update classes to add .only and .last
+function updateClasses() {
+  const projectInfo = objectStorage.getProjectInfo();
+  console.log(projectInfo);
 
-    
-  }
 }
 
 function buildLeftIcons(parent, object) {
@@ -247,7 +242,7 @@ function readForm(type) {
 function createTaskObj(type, projectID, name, description, dueDate, priority) {
   return {
     type: type,
-    projectID: projectID,
+    projectID: projectID.toLowerCase().replace(/\s+/g, ''),
     name: name,
     description: description,
     dueDate: dueDate,
@@ -277,7 +272,7 @@ function createTask() {
   objectStorage.storeTask(task);
   // update DOM
   console.log(task);
-  buildTask(task.projectID, task);
+  buildTask(task);
 }
 
 function createProject() {
@@ -294,7 +289,6 @@ function createProject() {
 // object storage
 const objectStorage = (() => {
   // initialize arrays
-  let unsortedTasks = [];
   let projectList = [{ type: 'project', projectID: 'default', name: 'Default', tasks: [] }];
 
   // function to store projects
@@ -308,19 +302,8 @@ const objectStorage = (() => {
   function storeTask(task) {
     // find the project in the projectList
     let projectIndex = projectList.findIndex(project => (project.projectID === task.projectID));
-    // if project does not exist (typo), add task to default
-    if (projectIndex === -1) {
-      unsortedTasks.push(task);
-    } else {
-      projectList[projectIndex].tasks.push(task);
-    }
+    projectList[projectIndex].tasks.push(task);
     console.log(projectList);
-  }
-
-  function returnProjectID(projectName) {
-    const projectIndex = projectList.findIndex(project => (project.name === projectName));
-    const projectID = projectList[projectIndex].projectID;
-    return projectID;
   }
 
   function getProjectNames() {
@@ -329,10 +312,20 @@ const objectStorage = (() => {
     return projectNames;
   }
 
+  function getProjectInfo() {
+    let projectInfo = [];
+    const removeDefault = projectList.slice(1);
+    removeDefault.forEach(project => {
+      projectInfo.push(project.projectID);
+      projectInfo.push(project.tasks.length);
+    });
+    return projectInfo;
+  }
+
   return {
     storeProject,
     storeTask,
-    returnProjectID,
     getProjectNames,
+    getProjectInfo,
   };
 })();
