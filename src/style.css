@@ -12,9 +12,9 @@
 
   /* icon colors */
   --header-icon: rgb(42, 43, 42);
-  --header-icon-hover: rgb(133, 105, 105);
+  --header-icon-hover: rgb(255, 255, 255);
   --toolbar-icon: rgb(71, 56, 56);
-  --toolbar-icon-hover: rgb(104, 40, 40);
+  --toolbar-icon-hover: rgb(250, 250, 250);
   --todo-container-icon: black;
 
   /* tasks colors */
