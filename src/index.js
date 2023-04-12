@@ -3,8 +3,13 @@ import './style.css';
 
 // initialize
 addModalEventListeners();
-
+submitEventListeners();
 // Add/remove Event Listeners
+function submitEventListeners() {
+  const submitBtn = document.querySelectorAll('.submit-btn');
+  submitBtn.forEach(btn => btn.addEventListener('click', validateForm));
+}
+
 function addModalEventListeners() {
   const addTaskBtns = document.querySelectorAll('.create-task-btn');
   const addProjBtns = document.querySelectorAll('.create-proj-btn');
@@ -25,11 +30,15 @@ function removeModalEventListeners() {
 function hideTaskModal() {
   const modal = document.querySelector('.task-modal');
   modal.classList.add('hidden');
+  // add modal event listeners back in
+  addModalEventListeners();
 }
 
 function hideProjModal() {
   const modal = document.querySelector('.project-modal');
   modal.classList.add('hidden');
+  // add modal event listeners back in
+  addModalEventListeners();
 }
 
 function showTaskModal() {
@@ -71,7 +80,7 @@ function buildProject(projectObj) {
   const project = document.createElement('div');
   document.querySelector('.todo-container').appendChild(project);
   project.classList.add('project-container');
-  project.id = `${projectObj.projectID}`;
+  project.id = `${projectObj.projectID}-project-container`;
 
   // create project header div (same structure as task)
   const projectHeader = buildItem(project, projectObj);
@@ -88,9 +97,8 @@ function buildProject(projectObj) {
 
 function buildTask(parentProjName, taskObj) {
   // find project container
-  const parentProj = document.querySelector(`#${parentProjName}`);
+  const parentProj = document.querySelector(`#${parentProjName}-project-container`);
   // create task container
-  console.log(parentProj);
   const taskContainer = buildItem(parentProj, taskObj);
   // create left icons
   buildLeftIcons(taskContainer, taskObj);
@@ -193,15 +201,36 @@ function buildRightIcons(parent, object) {
 }
 
 // Input handling
-function readForm(type1) {
-  // read info from modal form
 
+function validateForm(e) {
+  const type = e.target.id;
+  const form1 = document.querySelector('#task-name-input').reportValidity();
+  if (form1 && type === 'task') {
+    e.preventDefault();
+    hideTaskModal();
+    createTask();
+  } else if (form1 && type === 'project') {
+    e.preventDefault();
+    createProject();
+    hideProjModal();
+  }
+}
+function readForm(type) {
   // create new object from form information
   let newItem;
   if (type === 'task') {
+    const projectID = document.querySelector('#task-project-input').value;
+    const name = document.querySelector('#task-name-input').value;
+    const description = document.querySelector('#task-desc-input').value;
+    const dueDate = document.querySelector('#task-date-input').value;
+    const priority = document.querySelector('#task-priority-input').value;
     newItem = createTaskObj(type, projectID, name, description, dueDate, priority);
   } else {
-    newItem = createProjectObj(type, projectID, name, description, dueDate, status, tasks);
+    const name = document.querySelector('#proj-name-input').value;
+    const description = document.querySelector('#proj-desc-input').value;
+    const dueDate = document.querySelector('#proj-date-input').value;
+    const priority = document.querySelector('#task-priority-input').value;
+    newItem = createProjectObj(type, name, description, dueDate, priority);
   }
   //return object
   return newItem;
@@ -221,21 +250,23 @@ function createTaskObj(type, projectID, name, description, dueDate, priority) {
 }
 
 // create new task or project object
-function createProjectObj(type, projectID, name, description, dueDate, status, tasks) {
+function createProjectObj(type, name, description, dueDate, priority) {
+  const status = '0/0';
   return {
     type: type,
-    projectID: projectID,
+    projectID: name.toLowerCase().replace(/\s+/g, ''),
     name: name,
     description: description,
     dueDate: dueDate,
     status: status,
+    priority: priority,
     tasks: [],
   };
 }
 
 function createTask() {
   // get info from form
-  const task = readForm();
+  const task = readForm('task');
   console.log(task);
   // store task
   objectStorage.storeTask(task);
@@ -245,7 +276,7 @@ function createTask() {
 
 function createProject() {
   // get info from form
-  const project = readForm();
+  const project = readForm('project');
   // store project
   objectStorage.storeProject(project);
   // update DOM
@@ -264,8 +295,6 @@ const objectStorage = (() => {
   function storeProject(project) {
     // add project header to project list
     projectList.push(project);
-    console.log('PROJECT LIST');
-    console.log(projectList);
     // create new array to hold tasks in project
   }
 
