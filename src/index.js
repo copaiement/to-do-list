@@ -4,6 +4,7 @@ import './style.css';
 // initialize
 addModalEventListeners();
 submitEventListeners();
+
 // Add/remove Event Listeners
 function submitEventListeners() {
   const submitBtn = document.querySelectorAll('.submit-btn');
@@ -26,12 +27,38 @@ function removeModalEventListeners() {
   addProjBtns.forEach(btn => btn.removeEventListener('click', showProjModal));
 }
 
+function addActionEventListeners() {
+  const deleteBtns = document.querySelectorAll('.delete');
+  const checkBtns = document.querySelectorAll('.check');
+  const flagBtns = document.querySelectorAll('.flag');
+  const menuUpBtns = document.querySelectorAll('.menu-up');
+  const menuDownBtns = document.querySelectorAll('.menu-down');
+
+  deleteBtns.forEach(btn => btn.addEventListener('click', deleteItem));
+}
+
+// Button functions
+function deleteItem(e) {
+  const container = e.target.parentNode.parentNode.id;
+  const strArr = container.split('-');
+  const item = strArr[0];
+  const type = strArr[1];
+  deleteFromDOM(container);
+  if (type === 'task') {
+    
+  } else {
+    
+  }
+}
+
+
 // DOM manipulation
 function hideTaskModal() {
   const modal = document.querySelector('.task-modal');
   modal.classList.add('hidden');
   // add modal event listeners back in
   addModalEventListeners();
+  
 }
 
 function hideProjModal() {
@@ -85,14 +112,8 @@ function buildProject(projectObj) {
 
   // create project header div (same structure as task)
   const projectHeader = buildItem(project, projectObj);
-  // create left icons
-  buildLeftIcons(projectHeader, projectObj);
-  // create project header info
-  buildInfo(projectHeader, projectObj);
-  // create right icons
-  buildRightIcons(projectHeader, projectObj);
-  // update CSS classes
-  updateClasses();
+  projectHeader.id = `${projectObj.projectID}-project-header`;
+  buildCommon(projectHeader, projectObj);
 }
 
 function buildTask(taskObj) {
@@ -102,14 +123,22 @@ function buildTask(taskObj) {
   const parentProj = document.querySelector(`#${parentID}-project-container`);
   // create task container
   const taskContainer = buildItem(parentProj, taskObj);
+  // add task id
+  taskContainer.id = `${taskObj.taskID}-task-container`;
+  buildCommon(taskContainer, taskObj);
+}
+
+function buildCommon(container, object) {
   // create left icons
-  buildLeftIcons(taskContainer, taskObj);
-  // create task info
-  buildInfo(taskContainer, taskObj);
+  buildLeftIcons(container, object);
+  // create info
+  buildInfo(container, object);
   // create right icons
-  buildRightIcons(taskContainer, taskObj);
+  buildRightIcons(container, object);
   // update CSS classes
   updateClasses();
+  // add button event listeners
+  addActionEventListeners();
 }
 
 function buildItem(parent, object) {
@@ -136,15 +165,16 @@ function buildLeftIcons(parent, object) {
   const IconsLeft = document.createElement('div');
   parent.appendChild(IconsLeft);
   IconsLeft.classList.add('icons-left');
-
   // create project header icons, left
   const menuDownIcon = document.createElement('img');
   IconsLeft.appendChild(menuDownIcon);
   menuDownIcon.src = './images/menu-down.svg';
   menuDownIcon.alt = 'menu down icon';
+  menuDownIcon.classList.add('menu-down');
   menuDownIcon.classList.add('hidden');
   const menuUpIcon = document.createElement('img');
   IconsLeft.appendChild(menuUpIcon);
+  menuUpIcon.classList.add('menu-up');
   menuUpIcon.src = './images/menu-up.svg';
   menuUpIcon.alt = 'menu up icon';
 }
@@ -183,20 +213,30 @@ function buildRightIcons(parent, object) {
   const IconsRight = document.createElement('div');
   parent.appendChild(IconsRight);
   IconsRight.classList.add('icons-right');
-
   // create project header icons, right
   const checkIcon = document.createElement('img');
   IconsRight.appendChild(checkIcon);
+  checkIcon.classList.add('check');
   checkIcon.src = './images/check-bold.svg';
   checkIcon.alt = 'check icon';
   const flagIcon = document.createElement('img');
   IconsRight.appendChild(flagIcon);
+  flagIcon.classList.add('flag');
   flagIcon.src = './images/flag.svg';
   flagIcon.alt = 'flag icon';
   const trashIcon = document.createElement('img');
   IconsRight.appendChild(trashIcon);
+  trashIcon.classList.add('delete');
   trashIcon.src = './images/delete.svg';
   trashIcon.alt = 'trash icon';
+}
+
+function deleteProjectFromDOM(container) {
+  console.log(container);
+}
+
+function deleteTaskFromDOM(container) {
+  
 }
 
 // Input handling
@@ -242,6 +282,7 @@ function readForm(type) {
 function createTaskObj(type, projectID, name, description, dueDate, priority) {
   return {
     type,
+    taskID: name.toLowerCase().replace(/\s+/g, ''),
     projectID: projectID.toLowerCase().replace(/\s+/g, ''),
     name,
     description,
@@ -320,6 +361,15 @@ const objectStorage = (() => {
       projectInfo.push(project.tasks.length);
     });
     return projectInfo;
+  }
+
+  function deleteProject(id) {
+    let projectIndex = projectList.findIndex(project => (project.projectID === id));
+    projectList.splice(projectIndex, 1);
+  }
+
+  function deleteTask(id) {
+
   }
 
   return {

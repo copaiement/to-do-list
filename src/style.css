@@ -172,6 +172,11 @@ body {
   align-items: center;
 }
 
+.icons-left > img:hover,
+.icons-right > img:hover {
+  fill: white;
+}
+
 img {
   aspect-ratio: 1;
   height: 1rem;
