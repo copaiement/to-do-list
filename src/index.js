@@ -241,12 +241,12 @@ function readForm(type) {
 // create new task or project object
 function createTaskObj(type, projectID, name, description, dueDate, priority) {
   return {
-    type: type,
+    type,
     projectID: projectID.toLowerCase().replace(/\s+/g, ''),
-    name: name,
-    description: description,
-    dueDate: dueDate,
-    priority: priority,
+    name,
+    description,
+    dueDate,
+    priority,
   };
 }
 
@@ -254,13 +254,13 @@ function createTaskObj(type, projectID, name, description, dueDate, priority) {
 function createProjectObj(type, name, description, dueDate, priority) {
   const status = '0/0';
   return {
-    type: type,
+    type,
     projectID: name.toLowerCase().replace(/\s+/g, ''),
-    name: name,
-    description: description,
-    dueDate: dueDate,
+    name,
+    description,
+    dueDate,
     status: status,
-    priority: priority,
+    priority,
     tasks: [],
   };
 }
