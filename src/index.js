@@ -45,11 +45,11 @@ function deleteItem(e) {
   const type = strArr[1];
   //deleteFromDOM(container);
   if (type === 'task') {
+    objectStorage.deleteTask(container.parentNode.id, item);
     container.remove();
-    objectStorage.deleteTask(item);
   } else {
-    container.parentNode.remove();
     objectStorage.deleteProject(item);
+    container.parentNode.remove();
   }
 
   // check if deleting made tasklist empty
@@ -354,13 +354,16 @@ const objectStorage = (() => {
   }
 
   function deleteProject(id) {
-    console.log(id);
     let projectIndex = projectList.findIndex(project => (project.projectID === id));
     projectList.splice(projectIndex, 1);
   }
 
-  function deleteTask(id) {
-    let taskIndex = projectList.findIndex(project => )
+  function deleteTask(project, id) {
+    const parentArr = project.split('-');
+    const parentProj = parentArr[0];
+    let projectIndex = projectList.findIndex(project => (project.projectID === parentProj));
+    let taskIndex = projectList[projectIndex].tasks.findIndex(task => (task.taskID === id));
+    projectList[projectIndex].tasks.splice(taskIndex, 1);
   }
 
   function checkIfEmpty() {
