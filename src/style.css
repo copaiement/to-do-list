@@ -183,7 +183,8 @@ img {
 }
 
 .task-modal,
-.project-modal {
+.project-modal,
+.priority-modal {
   font-size: .75rem;
   align-items: center;
   display: flex;

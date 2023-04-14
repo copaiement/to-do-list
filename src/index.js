@@ -59,9 +59,7 @@ const priorityOps = (() => {
   let priorityID;
 
   function storeItem(e) {
-    console.log('test storeItem');
     itemInfo = getClickInfo(e);
-    console.log(itemInfo);
     showPriorityModal();
   }
 
@@ -74,7 +72,8 @@ const priorityOps = (() => {
   function changePriority() {
     console.log(priorityID);
     if (itemInfo.type === 'task') {
-      const lastPri = objectStorage.updateTaskPriority(itemInfo.container.parentNode, itemInfo.id, priorityID);
+      let infoArr = itemInfo.container.parentNode.id.split('-');
+      const lastPri = objectStorage.updateTaskPriority(infoArr[0], itemInfo.id, priorityID);
       itemInfo.container.classList.remove(`task-${lastPri}`);
       itemInfo.container.classList.add(`task-${priorityID}`);
     } else {
@@ -117,7 +116,7 @@ function deleteItem(e) {
 // DOM manipulation
 function hidePriorityModal() {
   const modal = document.querySelector('.priority-modal');
-  modal.classList.add('.hidden');
+  modal.classList.add('hidden');
   addModalEventListeners();
 }
 
