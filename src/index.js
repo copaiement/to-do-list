@@ -39,15 +39,22 @@ function addActionEventListeners() {
 
 // Button functions
 function deleteItem(e) {
-  const container = e.target.parentNode.parentNode.id;
-  const strArr = container.split('-');
+  const container = e.target.parentNode.parentNode;
+  const strArr = container.id.split('-');
   const item = strArr[0];
   const type = strArr[1];
-  deleteFromDOM(container);
+  //deleteFromDOM(container);
   if (type === 'task') {
-    
+    container.remove();
+    objectStorage.deleteTask(item);
   } else {
-    
+    container.parentNode.remove();
+    objectStorage.deleteProject(item);
+  }
+
+  // check if deleting made tasklist empty
+  if (objectStorage.checkIfEmpty()) {
+    document.querySelector('.empty-msg').classList.remove('hidden');
   }
 }
 
@@ -81,10 +88,6 @@ function showProjModal() {
   const modal = document.querySelector('.project-modal');
   modal.classList.remove('hidden');
   removeModalEventListeners();
-}
-
-function showHideWelcome() {
-  const msg = document.querySelector('.empty-msg');
 }
 
 function buildProjectList() {
@@ -231,26 +234,16 @@ function buildRightIcons(parent, object) {
   trashIcon.alt = 'trash icon';
 }
 
-function deleteProjectFromDOM(container) {
-  console.log(container);
-}
-
-function deleteTaskFromDOM(container) {
-  
-}
-
 // Input handling
 
 function validateForm(e) {
   const type = e.target.id;
-  console.log(type);
   const form1 = document.querySelector(`#${type}-name-input`).reportValidity();
   if (form1 && type === 'task') {
     e.preventDefault();
     hideTaskModal();
     createTask();
   } else if (form1 && type === 'project') {
-    console.log('test bitch');
     e.preventDefault();
     hideProjModal();
     createProject();
@@ -312,7 +305,6 @@ function createTask() {
   // store task
   objectStorage.storeTask(task);
   // update DOM
-  console.log(task);
   buildTask(task);
 }
 
@@ -336,7 +328,6 @@ const objectStorage = (() => {
   function storeProject(project) {
     // add project header to project list
     projectList.push(project);
-    console.log(projectList);
   }
 
   // function to store tasks
@@ -344,7 +335,6 @@ const objectStorage = (() => {
     // find the project in the projectList
     let projectIndex = projectList.findIndex(project => (project.projectID === task.projectID));
     projectList[projectIndex].tasks.push(task);
-    console.log(projectList);
   }
 
   function getProjectNames() {
@@ -364,12 +354,21 @@ const objectStorage = (() => {
   }
 
   function deleteProject(id) {
+    console.log(id);
     let projectIndex = projectList.findIndex(project => (project.projectID === id));
     projectList.splice(projectIndex, 1);
   }
 
   function deleteTask(id) {
+    let taskIndex = projectList.findIndex(project => )
+  }
 
+  function checkIfEmpty() {
+    console.log(projectList);
+    if (projectList.length === 1 && projectList[0].tasks.length === 0) {
+      return true;
+    }
+    return false;
   }
 
   return {
@@ -377,5 +376,8 @@ const objectStorage = (() => {
     storeTask,
     getProjectNames,
     getProjectInfo,
+    deleteProject,
+    deleteTask,
+    checkIfEmpty,
   };
 })();
