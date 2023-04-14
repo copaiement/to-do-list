@@ -35,9 +35,23 @@ function addActionEventListeners() {
   const menuDownBtns = document.querySelectorAll('.menu-down');
 
   deleteBtns.forEach(btn => btn.addEventListener('click', deleteItem));
+  checkBtns.forEach(btn => btn.addEventListener('click', markComplete));
+  flagBtns.forEach(btn => btn.addEventListener('click', changePriority));
 }
 
 // Button functions
+function changePriority(e) {
+  const container = e.target.parentNode.parentNode;
+  // make new priority modal and get info from it
+}
+
+function markComplete(e) {
+  const container = e.target.parentNode.parentNode;
+  // TASKS ONLY
+  // Change to class .complete
+  container.classList.add('.complete'); 
+}
+
 function deleteItem(e) {
   const container = e.target.parentNode.parentNode;
   const strArr = container.id.split('-');
