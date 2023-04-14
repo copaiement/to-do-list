@@ -1,9 +1,7 @@
 // import stylesheet
 import './style.css';
 
-// initialize
-addModalEventListeners();
-submitEventListeners();
+
 
 // Add/remove Event Listeners
 function submitEventListeners() {
@@ -11,10 +9,15 @@ function submitEventListeners() {
   submitBtn.forEach(btn => btn.addEventListener('click', validateForm));
 }
 
+function priorityEventListeners() {
+  const addPriorityBtns = document.querySelectorAll('.priority-btn');
+  addPriorityBtns.forEach(btn => btn.addEventListener('click', priorityOps.storePriority));
+}
+
 function addModalEventListeners() {
+  console.log('testing modals');
   const addTaskBtns = document.querySelectorAll('.create-task-btn');
   const addProjBtns = document.querySelectorAll('.create-proj-btn');
-
   addTaskBtns.forEach(btn => btn.addEventListener('click', showTaskModal));
   addProjBtns.forEach(btn => btn.addEventListener('click', showProjModal));
 }
@@ -22,7 +25,6 @@ function addModalEventListeners() {
 function removeModalEventListeners() {
   const addTaskBtns = document.querySelectorAll('.create-task-btn');
   const addProjBtns = document.querySelectorAll('.create-proj-btn');
-
   addTaskBtns.forEach(btn => btn.removeEventListener('click', showTaskModal));
   addProjBtns.forEach(btn => btn.removeEventListener('click', showProjModal));
 }
@@ -36,34 +38,73 @@ function addActionEventListeners() {
 
   deleteBtns.forEach(btn => btn.addEventListener('click', deleteItem));
   checkBtns.forEach(btn => btn.addEventListener('click', markComplete));
-  flagBtns.forEach(btn => btn.addEventListener('click', changePriority));
+  flagBtns.forEach(btn => btn.addEventListener('click', priorityOps.storeItem));
 }
 
 // Button functions
-function changePriority(e) {
+function getClickInfo(e) {
   const container = e.target.parentNode.parentNode;
-  // make new priority modal and get info from it
+  const strArr = container.id.split('-');
+  const item = {
+    id: strArr[0],
+    type: strArr[1],
+    container,
+  };
+  return item;
 }
 
+// priority function object
+const priorityOps = (() => {
+  let itemInfo;
+  let priorityID;
+
+  function storeItem(e) {
+    console.log('test storeItem');
+    itemInfo = getClickInfo(e);
+    console.log(itemInfo);
+    showPriorityModal();
+  }
+
+  function storePriority(e) {
+    priorityID = e.target.id;
+    hidePriorityModal();
+    changePriority();
+  }
+
+  function changePriority() {
+    console.log(priorityID);
+    if (itemInfo.type === 'task') {
+      const lastPri = objectStorage.updateTaskPriority(itemInfo.container.parentNode, itemInfo.id, priorityID);
+      itemInfo.container.classList.remove(`task-${lastPri}`);
+      itemInfo.container.classList.add(`task-${priorityID}`);
+    } else {
+  
+    }
+  }
+
+  return {
+    storeItem,
+    storePriority,
+  };
+})();
+
+
+
 function markComplete(e) {
-  const container = e.target.parentNode.parentNode;
+  const item = getClickInfo(e);
   // TASKS ONLY
   // Change to class .complete
-  container.classList.add('.complete'); 
+  item.container.classList.add('.complete');
 }
 
 function deleteItem(e) {
-  const container = e.target.parentNode.parentNode;
-  const strArr = container.id.split('-');
-  const item = strArr[0];
-  const type = strArr[1];
-  //deleteFromDOM(container);
-  if (type === 'task') {
-    objectStorage.deleteTask(container.parentNode.id, item);
-    container.remove();
+  const item = getClickInfo(e);
+  if (item.type === 'task') {
+    objectStorage.deleteTask(item.container.parentNode.id, item.id);
+    item.container.remove();
   } else {
-    objectStorage.deleteProject(item);
-    container.parentNode.remove();
+    objectStorage.deleteProject(item.id);
+    item.container.parentNode.remove();
   }
 
   // check if deleting made tasklist empty
@@ -74,12 +115,24 @@ function deleteItem(e) {
 
 
 // DOM manipulation
+function hidePriorityModal() {
+  const modal = document.querySelector('.priority-modal');
+  modal.classList.add('.hidden');
+  addModalEventListeners();
+}
+
+function showPriorityModal() {
+  // show priority modal
+  const modal = document.querySelector('.priority-modal');
+  modal.classList.remove('hidden');
+  removeModalEventListeners();
+}
+
 function hideTaskModal() {
   const modal = document.querySelector('.task-modal');
   modal.classList.add('hidden');
   // add modal event listeners back in
   addModalEventListeners();
-  
 }
 
 function hideProjModal() {
@@ -153,7 +206,7 @@ function buildCommon(container, object) {
   // create right icons
   buildRightIcons(container, object);
   // update CSS classes
-  updateClasses();
+  updateClasses(container, object);
   // add button event listeners
   addActionEventListeners();
 }
@@ -170,10 +223,13 @@ function buildItem(parent, object) {
   return item;
 }
 
-// after add, sort, or delete, update classes to add .only and .last
-function updateClasses() {
-  const projectInfo = objectStorage.getProjectInfo();
-  console.log(projectInfo);
+// after add, sort, or delete, update classes
+function updateClasses(container, object) {
+  // set priority class
+  console.log('does this even run?');
+  console.log(container);
+  console.log(object);
+  container.classList.add(`${object.type}-${object.priority}`);
 
 }
 
@@ -273,12 +329,14 @@ function readForm(type) {
     const dueDate = document.querySelector('#task-date-input').value;
     const priority = document.querySelector('#task-priority-input').value;
     newItem = createTaskObj(type, projectID, name, description, dueDate, priority);
-  } else {
+  } else if (type === 'project') {
     const name = document.querySelector('#project-name-input').value;
     const description = document.querySelector('#project-desc-input').value;
     const dueDate = document.querySelector('#project-date-input').value;
     const priority = document.querySelector('#project-priority-input').value;
     newItem = createProjectObj(type, name, description, dueDate, priority);
+  } else {
+    newItem = document.querySelector('#priority-input').value;
   }
   //return object
   return newItem;
@@ -388,6 +446,14 @@ const objectStorage = (() => {
     return false;
   }
 
+  function updateTaskPriority(projectID, taskID, updateValue) {
+    let projectIndex = projectList.findIndex(project => (project.projectID === projectID));
+    let taskIndex = projectList[projectIndex].tasks.findIndex(task => (task.taskID === taskID));
+    let lastPriority = projectList[projectIndex].tasks[taskIndex].priority;
+    projectList[projectIndex].tasks[taskIndex].priority = updateValue;
+    return lastPriority;
+  }
+
   return {
     storeProject,
     storeTask,
@@ -396,5 +462,11 @@ const objectStorage = (() => {
     deleteProject,
     deleteTask,
     checkIfEmpty,
+    updateTaskPriority,
   };
 })();
+
+// initialize
+addModalEventListeners();
+submitEventListeners();
+priorityEventListeners();

@@ -68,7 +68,7 @@
                 <label for="task-priority-input">Priority:</label>
                 <select id="task-priority-input" name="priority-input">
                   <option value="priority-low">Low</option>
-                  <option value="priority-med">Medium</option>
+                  <option value="priority-medium">Medium</option>
                   <option value="priority-high">High</option>
                 </select>
               </div>
@@ -96,7 +96,7 @@
                 <label for="project-priority-input">Priority:</label>
                 <select id="project-priority-input" name="priority-input">
                   <option value="priority-low">Low</option>
-                  <option value="priority-med">Medium</option>
+                  <option value="priority-medium">Medium</option>
                   <option value="priority-high">High</option>
                 </select>
               </div>
@@ -104,44 +104,15 @@
             </div>
           </form>
         </div>
+        <!-- create priority modal -->
+        <div class="priority-modal hidden">
+          <div class="priority-modal-text">Priority:</div>
+          <button class="priority-btn" id="priority-low">Low</button>
+          <button class="priority-btn" id="priority-medium">Medium</button>
+          <button class="priority-btn" id="priority-high">High</button>
+        </div>
         <!-- default project -->
-        <div class="project-container" id="default-project-container">
-          
-        </div>
-        <!-- template for projects -->
-        <div class="project-container hidden">
-          <div class="project-header">
-            <div class="icons-left">
-              <img class="hidden" src="./images/menu-down.svg" alt="menu down icon">
-              <img src="./images/menu-up.svg" alt="menu up icon">
-            </div>
-            <div class="name">Test Project</div>
-            <div class="desc hidden">Test Description</div>
-            <div class="due">Due: 6/7</div>
-            <div class="status">Complete: 0/7</div>
-            <div class="icons-right">
-              <img src="./images/check-bold.svg" alt="check icon">
-              <img src="./images/flag.svg" alt="flag icon">
-              <img src="./images/delete.svg" alt="trash icon">
-            </div>
-          </div>
-          <!-- template for tasks -->
-          <div class="task-container last hidden">
-            <div class="icons-left">
-              <img class="hidden" src="./images/menu-down.svg" alt="menu down icon">
-              <img src="./images/menu-up.svg" alt="menu up icon">
-            </div>
-            <div class="name">Test Task</div>
-            <div class="desc">Test Description</div>
-            <div class="due">Due: 6/7</div>
-            <div class="status hidden">Complete: 0/7</div>
-            <div class="icons-right">
-              <img src="./images/check-bold.svg" alt="check icon">
-              <img src="./images/flag.svg" alt="flag icon">
-              <img src="./images/delete.svg" alt="trash icon">
-            </div>
-          </div>
-        </div>
+        <div class="project-container" id="default-project-container"></div>
       </div>
     </div>
   </div>

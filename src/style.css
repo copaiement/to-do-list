@@ -228,15 +228,15 @@ form {
   display: none;
 }
 
-.task-low {
+.task-priority-low {
   background-color: var(--task-low);
 }
 
-.task-medium {
+.task-priority-medium {
   background-color: var(--task-medium);
 }
 
-.task-high {
+.task-priority-high {
   background-color: var(--task-high);
 }
 
@@ -244,15 +244,15 @@ form {
   background-color: var(--task-completed);
 }
 
-.project-low {
+.project-priority-low {
   background-color: var(--project-low);
 }
 
-.project-medium {
+.project-priority-medium {
   background-color: var(--project-medium);
 }
 
-.project-high {
+.project-priority-high {
   background-color: var(--project-high);
 }
 
