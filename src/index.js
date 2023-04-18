@@ -6,7 +6,7 @@
 // import stylesheet
 import './style.css';
 
-
+// import functions
 
 // Add/remove Event Listeners
 function submitEventListeners() {
@@ -50,7 +50,9 @@ function addActionEventListeners() {
 function getClickInfo(e) {
   const container = e.target.parentNode.parentNode;
   const strArr = container.id.split('-');
+  const projectArr = container.parentNode.id.split('-');
   const item = {
+    projectID: projectArr[0],
     id: strArr[0],
     type: strArr[1],
     container,
@@ -94,8 +96,7 @@ const priorityOps = (() => {
 
 function markTaskComplete(e) {
   const item = getClickInfo(e);
-  const projectID = item.container.parentNode.id.split('-')[0];
-  const completeStatus = objectStorage.getCompleteStatus(projectID, item.id);
+  const completeStatus = objectStorage.getCompleteStatus(item.projectID, item.id);
   if (completeStatus) {
     item.container.classList.add('complete');
   } else {
@@ -103,8 +104,8 @@ function markTaskComplete(e) {
   }
 
   // update status if project !default
-  if (projectID !== 'default') {
-    updateProjectStatus(projectID, item);
+  if (item.projectID !== 'default') {
+    updateProjectStatus(item.projectID, item);
   }
 }
 
@@ -112,11 +113,13 @@ function updateProjectStatus(projectID) {
   // update project status upon project completion
   const projectHeader = document.querySelector(`#${projectID}-project-header`);
   const statusText = projectHeader.querySelector('.status');
-  statusText.textContent = objectStorage.updateStatus(projectID);
-}
-
-function markProjectComplete() {
-  // if all 
+  const statusVal = objectStorage.updateStatus(projectID);
+  statusText.textContent = statusVal.statusVal;
+  if (statusVal.status) {
+    projectHeader.classList.add('complete');
+  } else {
+    projectHeader.classList.remove('complete');
+  }
 }
 
 function deleteItem(e) {
@@ -124,6 +127,7 @@ function deleteItem(e) {
   if (item.type === 'task') {
     objectStorage.deleteTask(item.container.parentNode.id, item.id);
     item.container.remove();
+    updateProjectStatus(item.projectID);
   } else {
     objectStorage.deleteProject(item.id);
     item.container.parentNode.remove();
@@ -205,6 +209,9 @@ function buildProject(projectObj) {
   const projectHeader = buildItem(project, projectObj);
   projectHeader.id = `${projectObj.projectID}-project-header`;
   buildCommon(projectHeader, projectObj);
+
+  // Update Project Status
+  //updateProjectStatus(projectObj.projectID);
 }
 
 function buildTask(taskObj) {
@@ -387,7 +394,7 @@ function createProjectObj(type, name, description, dueDate, priority) {
     name,
     description,
     dueDate,
-    status: status,
+    status,
     priority,
     tasks: [],
     complete: false,
@@ -468,40 +475,63 @@ const objectStorage = (() => {
     return false;
   }
 
+  function getProjectIndex(projectID) {
+    // gives just projectIndex value
+    const projectIndex = projectList.findIndex(project => (project.projectID === projectID));
+    return projectIndex;
+  }
+
+  function getTaskIndex(projectID, taskID) {
+    // gives both projectIndex and TaskIndex
+    const projectIndex = getProjectIndex(projectID);
+    const taskIndex = projectList[projectIndex].tasks.findIndex(task => (task.taskID === taskID));
+    return {
+      projectIndex,
+      taskIndex,
+    }
+  }
+
   function updateTaskPriority(projectID, taskID, updateValue) {
-    let projectIndex = projectList.findIndex(project => (project.projectID === projectID));
-    let taskIndex = projectList[projectIndex].tasks.findIndex(task => (task.taskID === taskID));
-    let lastPriority = projectList[projectIndex].tasks[taskIndex].priority;
-    projectList[projectIndex].tasks[taskIndex].priority = updateValue;
+    const index = getTaskIndex(projectID, taskID);
+    const lastPriority = projectList[index.projectIndex].tasks[index.taskIndex].priority;
+    projectList[index.projectIndex].tasks[index.taskIndex].priority = updateValue;
     return lastPriority;
   }
-  
+
   function updateProjectPriority(projectID, updateValue) {
-    let projectIndex = projectList.findIndex(project => (project.projectID === projectID));
-    let lastPriority = projectList[projectIndex].priority;
-    projectList[projectIndex].priority = updateValue;
+    const index = getProjectIndex(projectID);
+    const lastPriority = projectList[index].priority;
+    projectList[index].priority = updateValue;
     return lastPriority;
   }
 
   function getCompleteStatus(projectID, taskID) {
-    let projectIndex = projectList.findIndex(project => (project.projectID === projectID));
-    let taskIndex = projectList[projectIndex].tasks.findIndex(task => (task.taskID === taskID));
-    let completeStatus = projectList[projectIndex].tasks[taskIndex].complete;
+    const index = getTaskIndex(projectID, taskID);
+    const completeStatus = projectList[index.projectIndex].tasks[index.taskIndex].complete;
     if (completeStatus) {
-      projectList[projectIndex].tasks[taskIndex].complete = false;
+      projectList[index.projectIndex].tasks[index.taskIndex].complete = false;
     } else {
-      projectList[projectIndex].tasks[taskIndex].complete = true;
+      projectList[index.projectIndex].tasks[index.taskIndex].complete = true;
     }
-    return projectList[projectIndex].tasks[taskIndex].complete;
+    return projectList[index.projectIndex].tasks[index.taskIndex].complete;
   }
 
   function updateStatus(projectID) {
-    let projectIndex = projectList.findIndex(project => (project.projectID === projectID));
-    const taskList = projectList[projectIndex].tasks;
+    const index = getProjectIndex(projectID);
+    const taskList = projectList[index].tasks;
     const taskCount = taskList.length;
     const completeCount = taskList.filter(task => task.complete === true).length;
-    const returnVal = `${completeCount}/${taskCount}`;
-    return returnVal;
+    if (taskCount === completeCount && taskCount !== 0) {
+      projectList[index].complete = true;
+    } else {
+      projectList[index].complete = false;
+    }
+    const status = projectList[index].complete;
+    const statusVal = `${completeCount}/${taskCount}`;
+    return {
+      statusVal,
+      status,
+    };
   }
 
   return {
