@@ -1,3 +1,8 @@
+// to do list:
+// get sorting to work
+// update status on task add
+// update status on task delete
+
 // import stylesheet
 import './style.css';
 
@@ -37,7 +42,7 @@ function addActionEventListeners() {
   const menuDownBtns = document.querySelectorAll('.menu-down');
 
   deleteBtns.forEach(btn => btn.addEventListener('click', deleteItem));
-  checkBtns.forEach(btn => btn.addEventListener('click', markComplete));
+  checkBtns.forEach(btn => btn.addEventListener('click', markTaskComplete));
   flagBtns.forEach(btn => btn.addEventListener('click', priorityOps.storeItem));
 }
 
@@ -70,30 +75,48 @@ const priorityOps = (() => {
   }
 
   function changePriority() {
-    console.log(priorityID);
     if (itemInfo.type === 'task') {
       let infoArr = itemInfo.container.parentNode.id.split('-');
       const lastPri = objectStorage.updateTaskPriority(infoArr[0], itemInfo.id, priorityID);
       itemInfo.container.classList.remove(`task-${lastPri}`);
       itemInfo.container.classList.add(`task-${priorityID}`);
     } else {
-  
+      const lastPri = objectStorage.updateProjectPriority(itemInfo.id, priorityID);
+      itemInfo.container.classList.remove(`project-${lastPri}`);
+      itemInfo.container.classList.add(`project-${priorityID}`);
     }
   }
-
   return {
     storeItem,
     storePriority,
   };
 })();
 
-
-
-function markComplete(e) {
+function markTaskComplete(e) {
   const item = getClickInfo(e);
-  // TASKS ONLY
-  // Change to class .complete
-  item.container.classList.add('.complete');
+  const projectID = item.container.parentNode.id.split('-')[0];
+  const completeStatus = objectStorage.getCompleteStatus(projectID, item.id);
+  if (completeStatus) {
+    item.container.classList.add('complete');
+  } else {
+    item.container.classList.remove('complete');
+  }
+
+  // update status if project !default
+  if (projectID !== 'default') {
+    updateProjectStatus(projectID, item);
+  }
+}
+
+function updateProjectStatus(projectID) {
+  // update project status upon project completion
+  const projectHeader = document.querySelector(`#${projectID}-project-header`);
+  const statusText = projectHeader.querySelector('.status');
+  statusText.textContent = objectStorage.updateStatus(projectID);
+}
+
+function markProjectComplete() {
+  // if all 
 }
 
 function deleteItem(e) {
@@ -111,7 +134,6 @@ function deleteItem(e) {
     document.querySelector('.empty-msg').classList.remove('hidden');
   }
 }
-
 
 // DOM manipulation
 function hidePriorityModal() {
@@ -199,7 +221,7 @@ function buildTask(taskObj) {
 
 function buildCommon(container, object) {
   // create left icons
-  buildLeftIcons(container, object);
+  buildLeftIcons(container);
   // create info
   buildInfo(container, object);
   // create right icons
@@ -225,14 +247,11 @@ function buildItem(parent, object) {
 // after add, sort, or delete, update classes
 function updateClasses(container, object) {
   // set priority class
-  console.log('does this even run?');
-  console.log(container);
-  console.log(object);
   container.classList.add(`${object.type}-${object.priority}`);
 
 }
 
-function buildLeftIcons(parent, object) {
+function buildLeftIcons(parent) {
   // create project header icons container, left
   const IconsLeft = document.createElement('div');
   parent.appendChild(IconsLeft);
@@ -286,11 +305,14 @@ function buildRightIcons(parent, object) {
   parent.appendChild(IconsRight);
   IconsRight.classList.add('icons-right');
   // create project header icons, right
-  const checkIcon = document.createElement('img');
-  IconsRight.appendChild(checkIcon);
-  checkIcon.classList.add('check');
-  checkIcon.src = './images/check-bold.svg';
-  checkIcon.alt = 'check icon';
+  // check icon only for tasks
+  if (object.type === 'task') {
+    const checkIcon = document.createElement('img');
+    IconsRight.appendChild(checkIcon);
+    checkIcon.classList.add('check');
+    checkIcon.src = './images/check-bold.svg';
+    checkIcon.alt = 'check icon';
+  }
   const flagIcon = document.createElement('img');
   IconsRight.appendChild(flagIcon);
   flagIcon.classList.add('flag');
@@ -352,6 +374,7 @@ function createTaskObj(type, projectID, name, description, dueDate, priority) {
     description,
     dueDate,
     priority,
+    complete: false,
   };
 }
 
@@ -367,6 +390,7 @@ function createProjectObj(type, name, description, dueDate, priority) {
     status: status,
     priority,
     tasks: [],
+    complete: false,
   };
 }
 
@@ -438,7 +462,6 @@ const objectStorage = (() => {
   }
 
   function checkIfEmpty() {
-    console.log(projectList);
     if (projectList.length === 1 && projectList[0].tasks.length === 0) {
       return true;
     }
@@ -452,6 +475,34 @@ const objectStorage = (() => {
     projectList[projectIndex].tasks[taskIndex].priority = updateValue;
     return lastPriority;
   }
+  
+  function updateProjectPriority(projectID, updateValue) {
+    let projectIndex = projectList.findIndex(project => (project.projectID === projectID));
+    let lastPriority = projectList[projectIndex].priority;
+    projectList[projectIndex].priority = updateValue;
+    return lastPriority;
+  }
+
+  function getCompleteStatus(projectID, taskID) {
+    let projectIndex = projectList.findIndex(project => (project.projectID === projectID));
+    let taskIndex = projectList[projectIndex].tasks.findIndex(task => (task.taskID === taskID));
+    let completeStatus = projectList[projectIndex].tasks[taskIndex].complete;
+    if (completeStatus) {
+      projectList[projectIndex].tasks[taskIndex].complete = false;
+    } else {
+      projectList[projectIndex].tasks[taskIndex].complete = true;
+    }
+    return projectList[projectIndex].tasks[taskIndex].complete;
+  }
+
+  function updateStatus(projectID) {
+    let projectIndex = projectList.findIndex(project => (project.projectID === projectID));
+    const taskList = projectList[projectIndex].tasks;
+    const taskCount = taskList.length;
+    const completeCount = taskList.filter(task => task.complete === true).length;
+    const returnVal = `${completeCount}/${taskCount}`;
+    return returnVal;
+  }
 
   return {
     storeProject,
@@ -462,6 +513,9 @@ const objectStorage = (() => {
     deleteTask,
     checkIfEmpty,
     updateTaskPriority,
+    updateProjectPriority,
+    getCompleteStatus,
+    updateStatus,
   };
 })();
 

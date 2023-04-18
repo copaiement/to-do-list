@@ -29,6 +29,10 @@
   --project-medium: rgb(187, 139, 66);
   --project-high: rgb(190, 88, 88);
 
+  /* completed */
+  --completed: rgb(151, 218, 168);
+  --text-completed: rgb(90, 90, 90);
+
   /* text colors */
   --header-text: rgb(245, 253, 255);
   --toolbar-text: rgb(71, 56, 56);
@@ -241,10 +245,6 @@ form {
   background-color: var(--task-high);
 }
 
-.task-completed {
-  background-color: var(--task-completed);
-}
-
 .project-priority-low {
   background-color: var(--project-low);
 }
@@ -257,6 +257,8 @@ form {
   background-color: var(--project-high);
 }
 
-.project-completed {
-  background-color: var(--project-completed);
+.complete {
+  background-color: var(--completed);
+  color: var(--text-completed);
+  text-decoration: line-through;
 }
