@@ -9,6 +9,10 @@ import './style.css';
 // import functions
 
 // Add/remove Event Listeners
+function toolbarEventListener() {
+  const toolbarBtn = document.querySelector('.toggle-menu');
+  toolbarBtn.addEventListener('click', showHideToolbar);
+}
 function submitEventListeners() {
   const submitBtn = document.querySelectorAll('.submit-btn');
   submitBtn.forEach(btn => btn.addEventListener('click', validateForm));
@@ -67,7 +71,7 @@ const priorityOps = (() => {
 
   function storeItem(e) {
     itemInfo = getClickInfo(e);
-    showPriorityModal();
+    showPriorityModal(itemInfo);
   }
 
   function storePriority(e) {
@@ -105,7 +109,7 @@ function markTaskComplete(e) {
 
   // update status if project !default
   if (item.projectID !== 'default') {
-    updateProjectStatus(item.projectID, item);
+    updateProjectStatus(item.projectID);
   }
 }
 
@@ -140,16 +144,23 @@ function deleteItem(e) {
 }
 
 // DOM manipulation
+function showHideToolbar() {
+  const toolbar = document.querySelector('.toolbar');
+  toolbar.classList.toggle('hidden');
+}
+
 function hidePriorityModal() {
   const modal = document.querySelector('.priority-modal');
   modal.classList.add('hidden');
   addModalEventListeners();
 }
 
-function showPriorityModal() {
+function showPriorityModal(item) {
   // show priority modal
   const modal = document.querySelector('.priority-modal');
+  const modalText = document.querySelector('.priority-modal-text');
   modal.classList.remove('hidden');
+  modalText.textContent = `Select ${item.type} priority:`;
   removeModalEventListeners();
 }
 
@@ -209,9 +220,6 @@ function buildProject(projectObj) {
   const projectHeader = buildItem(project, projectObj);
   projectHeader.id = `${projectObj.projectID}-project-header`;
   buildCommon(projectHeader, projectObj);
-
-  // Update Project Status
-  //updateProjectStatus(projectObj.projectID);
 }
 
 function buildTask(taskObj) {
@@ -408,6 +416,10 @@ function createTask() {
   objectStorage.storeTask(task);
   // update DOM
   buildTask(task);
+  // update status if project !default
+  if (task.projectID !== 'default') {
+    updateProjectStatus(task.projectID);
+  }
 }
 
 function createProject() {
@@ -553,3 +565,4 @@ const objectStorage = (() => {
 addModalEventListeners();
 submitEventListeners();
 priorityEventListeners();
+toolbarEventListener();
