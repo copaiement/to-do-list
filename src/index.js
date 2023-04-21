@@ -48,6 +48,7 @@ function addActionEventListeners() {
   deleteBtns.forEach(btn => btn.addEventListener('click', deleteItem));
   checkBtns.forEach(btn => btn.addEventListener('click', markTaskComplete));
   flagBtns.forEach(btn => btn.addEventListener('click', priorityOps.storeItem));
+  menuUpBtns.forEach(btn => btn.addEventListener('click', toggleInfo))
 }
 
 // Button functions
@@ -143,6 +144,11 @@ function deleteItem(e) {
   }
 }
 
+// arrow button toggles info pane
+function toggleInfo() {
+  //const item = 
+}
+
 // DOM manipulation
 function showHideToolbar() {
   const toolbar = document.querySelector('.toolbar');
@@ -219,7 +225,8 @@ function buildProject(projectObj) {
   // create project header div (same structure as task)
   const projectHeader = buildItem(project, projectObj);
   projectHeader.id = `${projectObj.projectID}-project-header`;
-  buildCommon(projectHeader, projectObj);
+  buildSummary(projectHeader, projectObj);
+  buildFullDesc(projectHeader, projectObj);
 }
 
 function buildTask(taskObj) {
@@ -231,20 +238,59 @@ function buildTask(taskObj) {
   const taskContainer = buildItem(parentProj, taskObj);
   // add task id
   taskContainer.id = `${taskObj.taskID}-task-container`;
-  buildCommon(taskContainer, taskObj);
+  buildSummary(taskContainer, taskObj);
+  buildFullDesc(taskContainer, taskObj);
 }
 
-function buildCommon(container, object) {
+function buildSummary(container, object) {
+  // create Summary container
+  const summary = document.createElement('div');
+  container.appendChild(summary);
+  summary.classList.add('summary');
   // create left icons
-  buildLeftIcons(container);
+  buildLeftIcons(summary);
   // create info
-  buildInfo(container, object);
+  buildInfo(summary, object);
   // create right icons
-  buildRightIcons(container, object);
+  buildRightIcons(summary, object);
   // update CSS classes
-  updateClasses(container, object);
+  updateClasses(summary, object);
   // add button event listeners
   addActionEventListeners();
+}
+
+function buildFullDesc(container, object) {
+  // create description container
+  const descContainer = document.createElement('div');
+  container.appendChild(descContainer);
+  descContainer.classList.add('description');
+
+  const name = document.createElement('div');
+  descContainer.appendChild(name);
+  name.classList.add('property');
+  name.textContent = 'Name:';
+  const nameText = document.createElement('div');
+  descContainer.appendChild(nameText);
+  nameText.classList.add('value');
+  nameText.textContent = object.name;
+
+  const desc = document.createElement('div');
+  descContainer.appendChild(desc);
+  desc.classList.add('property');
+  desc.textContent = 'Description:'
+  const descText = document.createElement('div');
+  descContainer.appendChild(descText);
+  descText.classList.add('value');
+  descText.textContent = object.description;
+
+  const due = document.createElement('div');
+  descContainer.appendChild(due);
+  due.classList.add('property');
+  due.textContent = 'Due:';
+  const dueText = document.createElement('div');
+  descContainer.appendChild(dueText);
+  dueText.classList.add('value');
+  dueText.textContent = object.dueDate;
 }
 
 function buildItem(parent, object) {
@@ -291,27 +337,18 @@ function buildInfo(parent, object) {
   name.classList.add('name');
   name.textContent = object.name;
 
-  const desc = document.createElement('div');
-  parent.appendChild(desc);
-  desc.classList.add('desc');
-  desc.textContent = object.description;
-
   const due = document.createElement('div');
   parent.appendChild(due);
   due.classList.add('due');
   due.textContent = object.dueDate;
 
-  const status = document.createElement('div');
-  parent.appendChild(status);
-  status.classList.add('status');
-  status.textContent = object.status;
-
-  // hide either desc or status depending on object type
   if (object.type === 'project') {
-    desc.classList.add('hidden');
-  } else {
-    status.classList.add('hidden');
+    const status = document.createElement('div');
+    parent.appendChild(status);
+    status.classList.add('status');
+    status.textContent = object.status;
   }
+
 }
 
 function buildRightIcons(parent, object) {

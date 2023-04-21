@@ -166,23 +166,44 @@ button:hover {
 .project-header,
 .task-container {
   font-size: .75rem;
-  padding: .5rem;
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
   align-items: center;
 }
 
 .project-header {
   font-weight: 900;
-  background-color: var(--project-medium);
   border-radius: var(--radius) var(--radius) 0 0;
-  border-bottom: 2px solid black;
+  /* border-bottom: 2px solid black; */
 }
 
+.summary,
+.description {
+  width: 100%;
+  padding: .5rem;
+  display: flex;
+  justify-content: space-between;
+}
 
-.task-container {
-  background-color: var(--task-high);
-  border-bottom: 2px solid gray;
+.summary {
+  align-items: center;
+}
+
+.description {
+  flex-direction: column;
+  box-shadow:inset 0px 0px 0px 2px rgb(65, 65, 65);
+  gap: .5rem;
+}
+
+.property {
+  font-weight: 900;
+  color: black;
+}
+
+.value {
+  font-weight: 400;
+  color: rgb(46, 31, 70);
 }
 
 .icons-left,
