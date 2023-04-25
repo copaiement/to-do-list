@@ -24,7 +24,6 @@ function priorityEventListeners() {
 }
 
 function addModalEventListeners() {
-  console.log('testing modals');
   const addTaskBtns = document.querySelectorAll('.create-task-btn');
   const addProjBtns = document.querySelectorAll('.create-proj-btn');
   addTaskBtns.forEach(btn => btn.addEventListener('click', showTaskModal));
@@ -42,18 +41,19 @@ function addActionEventListeners() {
   const deleteBtns = document.querySelectorAll('.delete');
   const checkBtns = document.querySelectorAll('.check');
   const flagBtns = document.querySelectorAll('.flag');
-  const menuUpBtns = document.querySelectorAll('.menu-up');
+  const menuToggleBtns = document.querySelectorAll('.menu-toggle');
   const menuDownBtns = document.querySelectorAll('.menu-down');
 
   deleteBtns.forEach(btn => btn.addEventListener('click', deleteItem));
   checkBtns.forEach(btn => btn.addEventListener('click', markTaskComplete));
   flagBtns.forEach(btn => btn.addEventListener('click', priorityOps.storeItem));
-  menuUpBtns.forEach(btn => btn.addEventListener('click', toggleInfo))
+  menuToggleBtns.forEach(btn => btn.addEventListener('click', toggleInfo));
 }
 
 // Button functions
 function getClickInfo(e) {
   const container = e.target.parentNode.parentNode.parentNode;
+  const header = e.target.parentNode.parentNode;
   const strArr = container.id.split('-');
   const projectArr = container.parentNode.id.split('-');
   const item = {
@@ -61,6 +61,7 @@ function getClickInfo(e) {
     id: strArr[0],
     type: strArr[1],
     container,
+    header,
   };
   return item;
 }
@@ -85,12 +86,12 @@ const priorityOps = (() => {
     if (itemInfo.type === 'task') {
       let infoArr = itemInfo.container.parentNode.id.split('-');
       const lastPri = objectStorage.updateTaskPriority(infoArr[0], itemInfo.id, priorityID);
-      itemInfo.container.classList.remove(`task-${lastPri}`);
-      itemInfo.container.classList.add(`task-${priorityID}`);
+      itemInfo.header.classList.remove(`task-${lastPri}`);
+      itemInfo.header.classList.add(`task-${priorityID}`);
     } else {
       const lastPri = objectStorage.updateProjectPriority(itemInfo.id, priorityID);
-      itemInfo.container.classList.remove(`project-${lastPri}`);
-      itemInfo.container.classList.add(`project-${priorityID}`);
+      itemInfo.header.classList.remove(`project-${lastPri}`);
+      itemInfo.header.classList.add(`project-${priorityID}`);
     }
   }
   return {
@@ -103,9 +104,9 @@ function markTaskComplete(e) {
   const item = getClickInfo(e);
   const completeStatus = objectStorage.getCompleteStatus(item.projectID, item.id);
   if (completeStatus) {
-    item.container.classList.add('complete');
+    item.header.classList.add('complete');
   } else {
-    item.container.classList.remove('complete');
+    item.header.classList.remove('complete');
   }
 
   // update status if project !default
@@ -129,10 +130,13 @@ function updateProjectStatus(projectID) {
 
 function deleteItem(e) {
   const item = getClickInfo(e);
-  if (item.type === 'task') {
+  if (item.type === 'task' && item.projectID !== 'default') {
     objectStorage.deleteTask(item.container.parentNode.id, item.id);
     item.container.remove();
     updateProjectStatus(item.projectID);
+  } else if (item.type === 'task') {
+    objectStorage.deleteTask(item.container.parentNode.id, item.id);
+    item.container.remove();
   } else {
     objectStorage.deleteProject(item.id);
     item.container.parentNode.remove();
@@ -144,8 +148,6 @@ function deleteItem(e) {
   }
 }
 
-//THIS ONLY WORKS ONCE
-
 // arrow button toggles info pane
 function toggleInfo(e) {
   // get click info
@@ -153,10 +155,10 @@ function toggleInfo(e) {
   // show/hide info pane
   item.container.querySelector('.description').classList.toggle('hidden');
   // update button
-  const summary = item.container.querySelector('.summary')
+  const summary = item.container.querySelector('.summary');
   const leftIcons = summary.querySelector('.icons-left');
-  //leftIcons.querySelector('.menu-up').classList.toggle('hidden');
-  //leftIcons.querySelector('.menu-down').classList.toggle('hidden');
+  leftIcons.querySelector('#menu-up').classList.toggle('hidden');
+  leftIcons.querySelector('#menu-down').classList.toggle('hidden');
 }
 
 // DOM manipulation
@@ -288,7 +290,7 @@ function buildFullDesc(container, object) {
   const desc = document.createElement('div');
   descContainer.appendChild(desc);
   desc.classList.add('property');
-  desc.textContent = 'Description:'
+  desc.textContent = 'Description:';
   const descText = document.createElement('div');
   descContainer.appendChild(descText);
   descText.classList.add('value');
@@ -320,7 +322,6 @@ function buildItem(parent, object) {
 function updateClasses(container, object) {
   // set priority class
   container.classList.add(`${object.type}-${object.priority}`);
-
 }
 
 function buildLeftIcons(parent) {
@@ -329,17 +330,39 @@ function buildLeftIcons(parent) {
   parent.appendChild(IconsLeft);
   IconsLeft.classList.add('icons-left');
   // create project header icons, left
-  const menuDownIcon = document.createElement('img');
+  const menuDownIcon = document.createElement('svg');
   IconsLeft.appendChild(menuDownIcon);
-  menuDownIcon.src = './images/menu-down.svg';
-  menuDownIcon.alt = 'menu down icon';
-  menuDownIcon.classList.add('menu-down');
+  menuDownIcon.classList.add('menu-toggle');
+  menuDownIcon.id = 'menu-down';
   menuDownIcon.classList.add('hidden');
-  const menuUpIcon = document.createElement('img');
+  menuDownIcon.xmlns = 'http://www.w3.org/2000/svg';
+  menuDownIcon.viewBox = '0 0 24 24';
+  const menuDownPath = document.createElement('path');
+  menuDownIcon.appendChild(menuDownPath);
+  menuDownPath.d = 'M7,10L12,15L17,10H7Z';
+
+  const menuUpIcon = document.createElement('svg');
   IconsLeft.appendChild(menuUpIcon);
-  menuUpIcon.classList.add('menu-up');
-  menuUpIcon.src = './images/menu-up.svg';
-  menuUpIcon.alt = 'menu up icon';
+  menuUpIcon.classList.add('menu-toggle');
+  menuUpIcon.id = 'menu-up';
+  menuUpIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+  menuUpIcon.setAttribute('viewBox', '0 0 24 24');
+  const menuUpPath = document.createElement('path');
+  menuUpIcon.appendChild(menuUpPath);
+  menuUpPath.setAttribute('d', 'M7 15L12 10L17 15H7Z');
+  // const menuDownIcon = document.createElement('img');
+  // IconsLeft.appendChild(menuDownIcon);
+  // menuDownIcon.src = './images/menu-down.svg';
+  // menuDownIcon.alt = 'menu down icon';
+  // menuDownIcon.classList.add('menu-toggle');
+  // menuDownIcon.id = 'menu-down';
+  // menuDownIcon.classList.add('hidden');
+  // const menuUpIcon = document.createElement('img');
+  // IconsLeft.appendChild(menuUpIcon);
+  // menuUpIcon.classList.add('menu-toggle');
+  // menuUpIcon.src = './images/menu-up.svg';
+  // menuUpIcon.alt = 'menu up icon';
+  // menuUpIcon.id = 'menu-up';
 }
 
 function buildInfo(parent, object) {

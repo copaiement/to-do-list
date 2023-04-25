@@ -11,6 +11,7 @@
   --todo-container-bg: rgb(212, 194, 224);
   --modal-grayout: rgba(187, 184, 184, 0.7);
   --priority-modal: rgb(161, 161, 238);
+  --description-bg: rgb(240, 240, 240);
 
   /* icon colors */
   --header-icon: rgb(42, 43, 42);
@@ -175,7 +176,7 @@ button:hover {
 .project-header {
   font-weight: 900;
   border-radius: var(--radius) var(--radius) 0 0;
-  /* border-bottom: 2px solid black; */
+
 }
 
 .summary,
@@ -192,6 +193,7 @@ button:hover {
 
 .description {
   flex-direction: column;
+  background-color: var(--description-bg);
   box-shadow:inset 0px 0px 0px 2px rgb(65, 65, 65);
   gap: .5rem;
 }
@@ -219,6 +221,10 @@ button:hover {
 img {
   aspect-ratio: 1;
   height: 1rem;
+}
+
+img:hover {
+  fill: white;
 }
 
 .task-modal,
