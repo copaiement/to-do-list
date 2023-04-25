@@ -208,22 +208,16 @@ button:hover {
   color: rgb(46, 31, 70);
 }
 
-.icons-left,
-.icons-right {
+.icons-left > svg,
+.icons-right > svg {
   align-items: center;
-}
-
-.icons-left > img:hover,
-.icons-right > img:hover {
-  fill: white;
-}
-
-img {
+  fill: black;
   aspect-ratio: 1;
   height: 1rem;
 }
 
-img:hover {
+.icons-left > svg:hover,
+.icons-right > svg:hover {
   fill: white;
 }
 

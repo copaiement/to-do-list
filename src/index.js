@@ -330,39 +330,24 @@ function buildLeftIcons(parent) {
   parent.appendChild(IconsLeft);
   IconsLeft.classList.add('icons-left');
   // create project header icons, left
-  const menuDownIcon = document.createElement('svg');
+  const menuDownIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   IconsLeft.appendChild(menuDownIcon);
   menuDownIcon.classList.add('menu-toggle');
   menuDownIcon.id = 'menu-down';
   menuDownIcon.classList.add('hidden');
-  menuDownIcon.xmlns = 'http://www.w3.org/2000/svg';
-  menuDownIcon.viewBox = '0 0 24 24';
-  const menuDownPath = document.createElement('path');
+  menuDownIcon.setAttribute('viewBox', '0 0 24 24');
+  const menuDownPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   menuDownIcon.appendChild(menuDownPath);
-  menuDownPath.d = 'M7,10L12,15L17,10H7Z';
+  menuDownPath.setAttribute('d', 'M7 10L12 15L17 10H7Z');
 
-  const menuUpIcon = document.createElement('svg');
+  const menuUpIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   IconsLeft.appendChild(menuUpIcon);
   menuUpIcon.classList.add('menu-toggle');
   menuUpIcon.id = 'menu-up';
-  menuUpIcon.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   menuUpIcon.setAttribute('viewBox', '0 0 24 24');
-  const menuUpPath = document.createElement('path');
+  const menuUpPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
   menuUpIcon.appendChild(menuUpPath);
   menuUpPath.setAttribute('d', 'M7 15L12 10L17 15H7Z');
-  // const menuDownIcon = document.createElement('img');
-  // IconsLeft.appendChild(menuDownIcon);
-  // menuDownIcon.src = './images/menu-down.svg';
-  // menuDownIcon.alt = 'menu down icon';
-  // menuDownIcon.classList.add('menu-toggle');
-  // menuDownIcon.id = 'menu-down';
-  // menuDownIcon.classList.add('hidden');
-  // const menuUpIcon = document.createElement('img');
-  // IconsLeft.appendChild(menuUpIcon);
-  // menuUpIcon.classList.add('menu-toggle');
-  // menuUpIcon.src = './images/menu-up.svg';
-  // menuUpIcon.alt = 'menu up icon';
-  // menuUpIcon.id = 'menu-up';
 }
 
 function buildInfo(parent, object) {
@@ -393,22 +378,29 @@ function buildRightIcons(parent, object) {
   // create project header icons, right
   // check icon only for tasks
   if (object.type === 'task') {
-    const checkIcon = document.createElement('img');
+    const checkIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     IconsRight.appendChild(checkIcon);
     checkIcon.classList.add('check');
-    checkIcon.src = './images/check-bold.svg';
-    checkIcon.alt = 'check icon';
+    checkIcon.setAttribute('viewBox', '0 0 24 24');
+    const checkIconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    checkIcon.appendChild(checkIconPath);
+    checkIconPath.setAttribute('d', 'M9,20.42L2.79,14.21L5.62,11.38L9,14.77L18.88,4.88L21.71,7.71L9,20.42Z');
   }
-  const flagIcon = document.createElement('img');
+  const flagIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   IconsRight.appendChild(flagIcon);
   flagIcon.classList.add('flag');
-  flagIcon.src = './images/flag.svg';
-  flagIcon.alt = 'flag icon';
-  const trashIcon = document.createElement('img');
+  flagIcon.setAttribute('viewBox', '0 0 24 24');
+  const flagIconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  flagIcon.appendChild(flagIconPath);
+  flagIconPath.setAttribute('d', 'M14.4,6L14,4H5V21H7V14H12.6L13,16H20V6H14.4Z');
+
+  const trashIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
   IconsRight.appendChild(trashIcon);
   trashIcon.classList.add('delete');
-  trashIcon.src = './images/delete.svg';
-  trashIcon.alt = 'trash icon';
+  trashIcon.setAttribute('viewBox', '0 0 24 24');
+  const trashIconPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  trashIcon.appendChild(trashIconPath);
+  trashIconPath.setAttribute('d', 'M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z');
 }
 
 // Input handling
