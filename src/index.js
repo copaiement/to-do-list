@@ -53,7 +53,7 @@ function addActionEventListeners() {
 
 // Button functions
 function getClickInfo(e) {
-  const container = e.target.parentNode.parentNode;
+  const container = e.target.parentNode.parentNode.parentNode;
   const strArr = container.id.split('-');
   const projectArr = container.parentNode.id.split('-');
   const item = {
@@ -144,9 +144,19 @@ function deleteItem(e) {
   }
 }
 
+//THIS ONLY WORKS ONCE
+
 // arrow button toggles info pane
-function toggleInfo() {
-  //const item = 
+function toggleInfo(e) {
+  // get click info
+  const item = getClickInfo(e);
+  // show/hide info pane
+  item.container.querySelector('.description').classList.toggle('hidden');
+  // update button
+  const summary = item.container.querySelector('.summary')
+  const leftIcons = summary.querySelector('.icons-left');
+  //leftIcons.querySelector('.menu-up').classList.toggle('hidden');
+  //leftIcons.querySelector('.menu-down').classList.toggle('hidden');
 }
 
 // DOM manipulation
@@ -264,6 +274,7 @@ function buildFullDesc(container, object) {
   const descContainer = document.createElement('div');
   container.appendChild(descContainer);
   descContainer.classList.add('description');
+  descContainer.classList.add('hidden');
 
   const name = document.createElement('div');
   descContainer.appendChild(name);
