@@ -50,10 +50,17 @@ function addActionEventListeners() {
   menuToggleBtns.forEach(btn => btn.addEventListener('click', toggleInfo));
 }
 
+function addEditBtnEventListeners() {
+  const editBtn = document.querySelectorAll('.edit-btn');
+  editBtn.forEach(btn => btn.addEventListener('click', editInfo));
+  const submitEdit = document.querySelectorAll('.submit-edit');
+  submitEdit.forEach(btn => btn.addEventListener('click', submitEdit));
+}
+
 // Button functions
 function getClickInfo(e) {
-  const container = e.target.parentNode.parentNode.parentNode;
-  const header = e.target.parentNode.parentNode;
+  const container = e.target.parentNode.parentNode.parentNode.parentNode;
+  const header = e.target.parentNode.parentNode.parentNode;
   const strArr = container.id.split('-');
   const projectArr = container.parentNode.id.split('-');
   const item = {
@@ -63,7 +70,22 @@ function getClickInfo(e) {
     container,
     header,
   };
+  console.log(item);
   return item;
+}
+
+// edit info button
+function editInfo(e) {
+  const container = e.target.parentNode.parentNode.parentNode;
+  const strArr = container.id.split('-');
+  const projectArr = container.parentNode.id.split('-');
+  const item = {
+    projectID: projectArr[0],
+    id: strArr[0],
+    type: strArr[1],
+    container,
+  };
+  console.log(item);
 }
 
 // priority function object
@@ -151,6 +173,7 @@ function deleteItem(e) {
 // arrow button toggles info pane
 function toggleInfo(e) {
   // get click info
+  console.log(e);
   const item = getClickInfo(e);
   // show/hide info pane
   item.container.querySelector('.description').classList.toggle('hidden');
@@ -278,32 +301,48 @@ function buildFullDesc(container, object) {
   descContainer.classList.add('description');
   descContainer.classList.add('hidden');
 
+  const descContainerLeft = document.createElement('div');
+  descContainer.appendChild(descContainerLeft);
+  descContainerLeft.classList.add('desc-left');
+
+  const descContainerRight = document.createElement('div');
+  descContainer.appendChild(descContainerRight);
+  descContainerRight.classList.add('desc-right');
+
   const name = document.createElement('div');
-  descContainer.appendChild(name);
+  descContainerLeft.appendChild(name);
   name.classList.add('property');
   name.textContent = 'Name:';
   const nameText = document.createElement('div');
-  descContainer.appendChild(nameText);
+  descContainerLeft.appendChild(nameText);
   nameText.classList.add('value');
   nameText.textContent = object.name;
 
   const desc = document.createElement('div');
-  descContainer.appendChild(desc);
+  descContainerLeft.appendChild(desc);
   desc.classList.add('property');
   desc.textContent = 'Description:';
   const descText = document.createElement('div');
-  descContainer.appendChild(descText);
+  descContainerLeft.appendChild(descText);
   descText.classList.add('value');
   descText.textContent = object.description;
 
   const due = document.createElement('div');
-  descContainer.appendChild(due);
+  descContainerLeft.appendChild(due);
   due.classList.add('property');
   due.textContent = 'Due:';
   const dueText = document.createElement('div');
-  descContainer.appendChild(dueText);
+  descContainerLeft.appendChild(dueText);
   dueText.classList.add('value');
   dueText.textContent = object.dueDate;
+
+  const editBtn = document.createElement('button');
+  descContainerRight.appendChild(editBtn);
+  editBtn.classList.add('edit-btn');
+  editBtn.textContent = 'Edit Details';
+
+  // add event listeners
+  addEditBtnEventListeners();
 }
 
 function buildItem(parent, object) {

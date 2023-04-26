@@ -192,10 +192,34 @@ button:hover {
 }
 
 .description {
-  flex-direction: column;
+  display: flex;
   background-color: var(--description-bg);
   box-shadow:inset 0px 0px 0px 2px rgb(65, 65, 65);
+
+}
+
+.desc-left,
+.desc-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   gap: .5rem;
+}
+
+.desc-right {
+  justify-content: center;
+}
+
+.edit-btn {
+  border-radius: .25rem;
+  color: black;
+  background-color: rgb(233, 229, 181);
+  transition: .2s;
+}
+
+.edit-btn:hover {
+  color: rgb(0, 0, 0);
+  background-color: rgb(233, 165, 75);
 }
 
 .property {
