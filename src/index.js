@@ -145,9 +145,11 @@ function markTaskComplete(e) {
     item.header.classList.remove('complete');
   }
 
-  // update status if project !default
+  // update project status if project !default
   if (item.projectID !== 'default') {
     updateProjectStatus(item.projectID);
+  } else {
+    objectStorage.updateProjectPriority('default');
   }
 }
 
@@ -299,19 +301,24 @@ function buildTask(taskObj) {
   buildFullDesc(taskContainer, taskObj);
 }
 
-function buildSummary(container, object) {
+function buildSummary(container, taskObj) {
   // create Summary container
   const summary = document.createElement('div');
   container.appendChild(summary);
   summary.classList.add('summary');
+
+  // if task completed (for load in from storage), set complete
+  if (taskObj.complete) {
+    summary.classList.add('complete');
+  }
   // create left icons
   buildLeftIcons(summary);
   // create info
-  buildInfo(summary, object);
+  buildInfo(summary, taskObj);
   // create right icons
-  buildRightIcons(summary, object);
+  buildRightIcons(summary, taskObj);
   // update CSS classes
-  updateClasses(summary, object);
+  updateClasses(summary, taskObj);
   // add button event listeners
   addActionEventListeners();
 }
@@ -609,7 +616,10 @@ const objectStorage = (() => {
   function initializeProjectList() {
     if (storageAvailable('localStorage') && localStorage.getItem('projectList') !== null) {
       projectList = JSON.parse(localStorage.getItem('projectList'));
-      initialize.buildFromStorage(projectList);
+      // if saved project list is not empty, build from storage
+      if (projectList.length > 1 || projectList[0].tasks.length > 0) {
+        initialize.buildFromStorage(projectList);
+      }
     } else {
       projectList = [{
         type: 'project', projectID: 'default', name: 'Default', tasks: [],
@@ -808,13 +818,18 @@ const initialize = (() => {
   // build current page from stored projectList
   function buildFromStorage(projectList) {
     console.log(projectList);
-
+    // remove hidden message
+    document.querySelector('.empty-msg').classList.add('hidden');
     // fist entry is default container
+    objectStorage.updateStatus(projectList[0].projectID);
     projectList[0].tasks.forEach(task => buildTask(task));
 
     // build each project and tasks
     for (let i = 1; i < projectList.length; i += 1) {
       buildProject(projectList[i]);
+      // update status
+      updateProjectStatus(projectList[i].projectID);
+      // build tasks
       projectList[i].tasks.forEach(task => buildTask(task));
     }
   }
@@ -832,5 +847,3 @@ const initialize = (() => {
 })();
 
 initialize.loadFromStorage();
-
-
