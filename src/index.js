@@ -603,12 +603,53 @@ function createProject() {
 // object storage
 const objectStorage = (() => {
   // initialize arrays
-  let projectList = [{ type: 'project', projectID: 'default', name: 'Default', tasks: [] }];
+  let projectList = [];
 
+  // check if there is a projectList in local storage
+  if (storageAvailable('localStorage') && localStorage.getItem('projectList') !== null) {
+    projectList = JSON.parse(localStorage.getItem('projectList'));
+  } else {
+    projectList = [{
+      type: 'project', projectID: 'default', name: 'Default', tasks: [],
+    }];
+  }
+
+  // test if storage is available in browser
+  function storageAvailable(type) {
+    let storage;
+    try {
+      storage = window[type];
+      const x = '__storage_test__';
+      storage.setItem(x, x);
+      storage.removeItem(x);
+      return true;
+    } catch (e) {
+      return (
+        e instanceof DOMException
+        // everything except Firefox
+        && (e.code === 22
+        // Firefox
+        || e.code === 1014
+        // test name field too, because code might not be present
+        // everything except Firefox
+        || e.name === 'QuotaExceededError'
+        // Firefox
+        || e.name === 'NS_ERROR_DOM_QUOTA_REACHED')
+        // acknowledge QuotaExceededError only if there's something already stored
+        && storage
+        && storage.length !== 0
+      );
+    }
+  }
+
+  function saveProjectList(projectList) {
+    localStorage.setItem('projectList', JSON.stringify(projectList));
+  }
   // function to store projects
   function storeProject(project) {
     // add project header to project list
     projectList.push(project);
+    saveProjectList(projectList);
   }
 
   // function to store tasks
@@ -616,6 +657,7 @@ const objectStorage = (() => {
     // find the project in the projectList
     let projectIndex = projectList.findIndex(project => (project.projectID === task.projectID));
     projectList[projectIndex].tasks.push(task);
+    saveProjectList(projectList);
   }
 
   function getProjectNames() {
@@ -637,6 +679,7 @@ const objectStorage = (() => {
   function deleteProject(id) {
     let projectIndex = projectList.findIndex(project => (project.projectID === id));
     projectList.splice(projectIndex, 1);
+    saveProjectList(projectList);
   }
 
   function deleteTask(project, id) {
@@ -645,6 +688,7 @@ const objectStorage = (() => {
     let projectIndex = projectList.findIndex(project => (project.projectID === parentProj));
     let taskIndex = projectList[projectIndex].tasks.findIndex(task => (task.taskID === id));
     projectList[projectIndex].tasks.splice(taskIndex, 1);
+    saveProjectList(projectList);
   }
 
   function checkIfEmpty() {
@@ -674,6 +718,7 @@ const objectStorage = (() => {
     const index = getTaskIndex(projectID, taskID);
     const lastPriority = projectList[index.projectIndex].tasks[index.taskIndex].priority;
     projectList[index.projectIndex].tasks[index.taskIndex].priority = updateValue;
+    saveProjectList(projectList);
     return lastPriority;
   }
 
@@ -681,6 +726,7 @@ const objectStorage = (() => {
     const index = getProjectIndex(projectID);
     const lastPriority = projectList[index].priority;
     projectList[index].priority = updateValue;
+    saveProjectList(projectList);
     return lastPriority;
   }
 
@@ -707,6 +753,7 @@ const objectStorage = (() => {
     }
     const status = projectList[index].complete;
     const statusVal = `${completeCount}/${taskCount}`;
+    saveProjectList(projectList);
     return {
       statusVal,
       status,
@@ -728,6 +775,7 @@ const objectStorage = (() => {
       task.dueDate = newInfo.newDue;
       task.taskID = newInfo.newName.toLowerCase().replace(/\s+/g, '');
     }
+    saveProjectList(projectList);
   }
 
   return {
@@ -751,3 +799,5 @@ addModalEventListeners();
 submitEventListeners();
 priorityEventListeners();
 toolbarEventListener();
+
+
