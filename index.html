@@ -62,7 +62,7 @@
               </div>
               <div class="form-row">
                 <label for="task-date-input">Due Date:</label>
-                <input id="task-date-input" type="text">
+                <input id="task-date-input" type="date">
               </div>
               <div class="form-row">
                 <label for="task-priority-input">Priority:</label>
@@ -90,7 +90,7 @@
               </div>
               <div class="form-row">
                 <label for="project-date-input">Due Date:</label>
-                <input id="project-date-input" type="text">
+                <input id="project-date-input" type="date">
               </div>
               <div class="form-row">
                 <label for="project-priority-input">Priority:</label>
@@ -114,6 +114,26 @@
               <button class="priority-btn" id="priority-high">High</button>
             </div>
           </div>
+        </div>
+        <!-- Change info Modal -->
+        <div class="edit-modal hidden">
+          <form action="submit">
+            <div class="input-wrapper">
+              <div class="form-row">
+                <label for="edit-name-input">Name:</label>
+                <input id="edit-name-input" type="text" placeholder="Client Email" required>
+              </div>
+              <div class="form-row">
+                <label for="edit-desc-input">Description:</label>
+                <input type="text" id="edit-desc-input" placeholder="Optional">
+              </div>
+              <div class="form-row">
+                <label for="edit-date-input">Due Date:</label>
+                <input id="edit-date-input" type="date">
+              </div>
+              <button class="submit-btn" id="edit">Save</button>
+            </div>
+          </form>
         </div>
         <!-- default project -->
         <div class="project-container" id="default-project-container"></div>
