@@ -59,6 +59,10 @@ body {
   flex-direction: column;
 }
 
+path {
+  pointer-events: none;
+}
+
 button {
   font-size: .75rem;
   border: none;
@@ -147,7 +151,6 @@ button:hover {
   flex-direction: column;
   padding: 1rem;
   gap: .5rem;
-  
 }
 
 .empty-msg {
@@ -185,6 +188,7 @@ button:hover {
   padding: .5rem;
   display: flex;
   justify-content: space-between;
+  transition: .2s;
 }
 
 .summary {
@@ -247,7 +251,8 @@ button:hover {
 
 .task-modal,
 .project-modal,
-.priority-modal {
+.priority-modal,
+.edit-modal {
   font-size: .75rem;
   align-items: center;
   display: flex;

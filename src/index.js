@@ -42,7 +42,6 @@ function addActionEventListeners() {
   const checkBtns = document.querySelectorAll('.check');
   const flagBtns = document.querySelectorAll('.flag');
   const menuToggleBtns = document.querySelectorAll('.menu-toggle');
-  const menuDownBtns = document.querySelectorAll('.menu-down');
 
   deleteBtns.forEach(btn => btn.addEventListener('click', deleteItem));
   checkBtns.forEach(btn => btn.addEventListener('click', markTaskComplete));
@@ -52,15 +51,15 @@ function addActionEventListeners() {
 
 function addEditBtnEventListeners() {
   const editBtn = document.querySelectorAll('.edit-btn');
-  editBtn.forEach(btn => btn.addEventListener('click', editInfo));
-  const submitEdit = document.querySelectorAll('.submit-edit');
+  editBtn.forEach(btn => btn.addEventListener('click', editOps.getEditInfo));
+  const submitEdit = document.querySelectorAll('#submit-edit');
   submitEdit.forEach(btn => btn.addEventListener('click', submitEdit));
 }
 
 // Button functions
 function getClickInfo(e) {
-  const container = e.target.parentNode.parentNode.parentNode.parentNode;
-  const header = e.target.parentNode.parentNode.parentNode;
+  const container = e.target.parentNode.parentNode.parentNode;
+  const header = e.target.parentNode.parentNode;
   const strArr = container.id.split('-');
   const projectArr = container.parentNode.id.split('-');
   const item = {
@@ -70,23 +69,38 @@ function getClickInfo(e) {
     container,
     header,
   };
-  console.log(item);
   return item;
 }
 
 // edit info button
-function editInfo(e) {
-  const container = e.target.parentNode.parentNode.parentNode;
-  const strArr = container.id.split('-');
-  const projectArr = container.parentNode.id.split('-');
-  const item = {
-    projectID: projectArr[0],
-    id: strArr[0],
-    type: strArr[1],
-    container,
+const editOps = (() => {
+  let item;
+
+  function getEditInfo(e) {
+    const container = e.target.parentNode.parentNode.parentNode;
+    const strArr = container.id.split('-');
+    const projectArr = container.parentNode.id.split('-');
+    item = {
+      projectID: projectArr[0],
+      id: strArr[0],
+      type: strArr[1],
+      container,
+    };
+    showEditModal();
+  }
+
+  function saveEdit(editInfo) {
+    // update DOM
+    editItemDOM(item, editInfo);
+    // update Project Storage
+    objectStorage.updateInfo(item, editInfo);
+  }
+
+  return {
+    getEditInfo,
+    saveEdit,
   };
-  console.log(item);
-}
+})();
 
 // priority function object
 const priorityOps = (() => {
@@ -139,7 +153,7 @@ function markTaskComplete(e) {
 
 function updateProjectStatus(projectID) {
   // update project status upon project completion
-  const projectHeader = document.querySelector(`#${projectID}-project-header`);
+  const projectHeader = document.querySelector(`#${projectID}-project-header`).firstChild;
   const statusText = projectHeader.querySelector('.status');
   const statusVal = objectStorage.updateStatus(projectID);
   statusText.textContent = statusVal.statusVal;
@@ -172,8 +186,6 @@ function deleteItem(e) {
 
 // arrow button toggles info pane
 function toggleInfo(e) {
-  // get click info
-  console.log(e);
   const item = getClickInfo(e);
   // show/hide info pane
   item.container.querySelector('.description').classList.toggle('hidden');
@@ -232,6 +244,16 @@ function showProjModal() {
   const modal = document.querySelector('.project-modal');
   modal.classList.remove('hidden');
   removeModalEventListeners();
+}
+
+function showEditModal() {
+  document.querySelector('.edit-modal').classList.remove('hidden');
+  removeModalEventListeners();
+}
+
+function hideEditModal() {
+  document.querySelector('.edit-modal').classList.add('hidden');
+  addModalEventListeners();
 }
 
 function buildProjectList() {
@@ -309,13 +331,16 @@ function buildFullDesc(container, object) {
   descContainer.appendChild(descContainerRight);
   descContainerRight.classList.add('desc-right');
 
+  const cap = object.type.charAt(0).toUpperCase() + object.type.slice(1);
+
   const name = document.createElement('div');
   descContainerLeft.appendChild(name);
   name.classList.add('property');
-  name.textContent = 'Name:';
+  name.textContent = `${cap} Name:`;
   const nameText = document.createElement('div');
   descContainerLeft.appendChild(nameText);
   nameText.classList.add('value');
+  nameText.id = 'desc-name';
   nameText.textContent = object.name;
 
   const desc = document.createElement('div');
@@ -325,15 +350,17 @@ function buildFullDesc(container, object) {
   const descText = document.createElement('div');
   descContainerLeft.appendChild(descText);
   descText.classList.add('value');
+  descText.id = 'desc-desc';
   descText.textContent = object.description;
 
   const due = document.createElement('div');
   descContainerLeft.appendChild(due);
   due.classList.add('property');
-  due.textContent = 'Due:';
+  due.textContent = 'Due Date:';
   const dueText = document.createElement('div');
   descContainerLeft.appendChild(dueText);
   dueText.classList.add('value');
+  dueText.id = 'desc-date';
   dueText.textContent = object.dueDate;
 
   const editBtn = document.createElement('button');
@@ -393,11 +420,13 @@ function buildInfo(parent, object) {
   const name = document.createElement('div');
   parent.appendChild(name);
   name.classList.add('name');
+  name.id = 'head-name';
   name.textContent = object.name;
 
   const due = document.createElement('div');
   parent.appendChild(due);
   due.classList.add('due');
+  due.id = 'head-date';
   due.textContent = object.dueDate;
 
   if (object.type === 'project') {
@@ -406,7 +435,6 @@ function buildInfo(parent, object) {
     status.classList.add('status');
     status.textContent = object.status;
   }
-
 }
 
 function buildRightIcons(parent, object) {
@@ -442,6 +470,25 @@ function buildRightIcons(parent, object) {
   trashIconPath.setAttribute('d', 'M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z');
 }
 
+function editItemDOM(ogItem, newItem) {
+  // update text
+  ogItem.container.querySelector('#head-name').textContent = newItem.newName;
+  ogItem.container.querySelector('#desc-name').textContent = newItem.newName;
+  ogItem.container.querySelector('#desc-desc').textContent = newItem.newDesc;
+  ogItem.container.querySelector('#head-date').textContent = newItem.newDue;
+  ogItem.container.querySelector('#desc-date').textContent = newItem.newDue;
+
+  // update classes
+  // create new ID
+  const id = newItem.newName.toLowerCase().replace(/\s+/g, '');
+  const container = document.querySelector(`#${ogItem.id}-${ogItem.type}-container`);
+  container.id = `${id}-${ogItem.type}-container`;
+  if (ogItem.type === 'project') {
+    const header = document.querySelector(`#${ogItem.id}-${ogItem.type}-header`);
+    header.id = `${id}-${ogItem.type}-header`;
+  }
+}
+
 // Input handling
 
 function validateForm(e) {
@@ -455,8 +502,26 @@ function validateForm(e) {
     e.preventDefault();
     hideProjModal();
     createProject();
+  } else if (form1 && type === 'edit') {
+    e.preventDefault();
+    hideEditModal();
+    const itemEdit = readEdit();
+    editOps.saveEdit(itemEdit);
   }
 }
+
+function readEdit() {
+  const nameInput = document.querySelector('#edit-name-input').value;
+  const descInput = document.querySelector('#edit-desc-input').value;
+  const dueInput = document.querySelector('#edit-date-input').value;
+  const itemEdit = {
+    newName: nameInput,
+    newDesc: descInput,
+    newDue: dueInput,
+  };
+  return itemEdit;
+}
+
 function readForm(type) {
   // create new object from form information
   let newItem;
@@ -648,6 +713,23 @@ const objectStorage = (() => {
     };
   }
 
+  function updateInfo(oldInfo, newInfo) {
+    if (oldInfo.type === 'project') {
+      const index = getProjectIndex(oldInfo.id);
+      projectList[index].name = newInfo.newName;
+      projectList[index].description = newInfo.newDesc;
+      projectList[index].dueDate = newInfo.newDue;
+      projectList[index].projectID = newInfo.newName.toLowerCase().replace(/\s+/g, '');
+    } else {
+      const index = getTaskIndex(oldInfo.projectID, oldInfo.id);
+      const task = projectList[index.projectIndex].tasks[index.taskIndex];
+      task.name = newInfo.newName;
+      task.description = newInfo.newDesc;
+      task.dueDate = newInfo.newDue;
+      task.taskID = newInfo.newName.toLowerCase().replace(/\s+/g, '');
+    }
+  }
+
   return {
     storeProject,
     storeTask,
@@ -660,6 +742,7 @@ const objectStorage = (() => {
     updateProjectPriority,
     getCompleteStatus,
     updateStatus,
+    updateInfo,
   };
 })();
 
