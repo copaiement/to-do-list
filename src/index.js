@@ -606,12 +606,15 @@ const objectStorage = (() => {
   let projectList = [];
 
   // check if there is a projectList in local storage
-  if (storageAvailable('localStorage') && localStorage.getItem('projectList') !== null) {
-    projectList = JSON.parse(localStorage.getItem('projectList'));
-  } else {
-    projectList = [{
-      type: 'project', projectID: 'default', name: 'Default', tasks: [],
-    }];
+  function initializeProjectList() {
+    if (storageAvailable('localStorage') && localStorage.getItem('projectList') !== null) {
+      projectList = JSON.parse(localStorage.getItem('projectList'));
+      initialize.buildFromStorage(projectList);
+    } else {
+      projectList = [{
+        type: 'project', projectID: 'default', name: 'Default', tasks: [],
+      }];
+    }
   }
 
   // test if storage is available in browser
@@ -779,6 +782,7 @@ const objectStorage = (() => {
   }
 
   return {
+    initializeProjectList,
     storeProject,
     storeTask,
     getProjectNames,
@@ -794,10 +798,39 @@ const objectStorage = (() => {
   };
 })();
 
-// initialize
-addModalEventListeners();
-submitEventListeners();
-priorityEventListeners();
-toolbarEventListener();
+// initialization
+const initialize = (() => {
+  // initialize object storage
+  function loadFromStorage() {
+    objectStorage.initializeProjectList();
+  }
+
+  // build current page from stored projectList
+  function buildFromStorage(projectList) {
+    console.log(projectList);
+
+    // fist entry is default container
+    projectList[0].tasks.forEach(task => buildTask(task));
+
+    // build each project and tasks
+    for (let i = 1; i < projectList.length; i += 1) {
+      buildProject(projectList[i]);
+      projectList[i].tasks.forEach(task => buildTask(task));
+    }
+  }
+
+  // initialize event listeners
+  addModalEventListeners();
+  submitEventListeners();
+  priorityEventListeners();
+  toolbarEventListener();
+
+  return {
+    loadFromStorage,
+    buildFromStorage,
+  };
+})();
+
+initialize.loadFromStorage();
 
 
