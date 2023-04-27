@@ -7,7 +7,7 @@ import {
   removeModalEventListeners,
   addActionEventListeners,
   addEditBtnEventListeners,
-} from './listen';
+} from './btns';
 
 // DOM manipulation
 function showHideToolbar() {

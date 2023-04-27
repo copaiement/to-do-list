@@ -1,5 +1,9 @@
 // import functions
 import {
+  toolbarEventListener,
+  submitEventListeners,
+  priorityEventListeners,
+  addModalEventListeners,
   updateProjectStatus,
 } from './btns';
 import {
@@ -9,12 +13,6 @@ import {
 import {
   readForm,
 } from './inputs';
-import {
-  toolbarEventListener,
-  submitEventListeners,
-  priorityEventListeners,
-  addModalEventListeners,
-} from './listen';
 
 // initialization
 const initialize = (() => {
@@ -25,7 +23,6 @@ const initialize = (() => {
 
   // build current page from stored projectList
   function buildFromStorage(projectList) {
-    console.log(projectList);
     // remove hidden message
     document.querySelector('.empty-msg').classList.add('hidden');
     // fist entry is default container
